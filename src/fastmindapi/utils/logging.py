@@ -19,7 +19,7 @@ def get_logger() -> logging.Logger:
     os.makedirs("FMAPI_log/", exist_ok=True)
 
     # 1. 实例化写入日志文件的Handler
-    file_handler = logging.FileHandler('FMAPI_log/{}.log'.format(config.job_time))
+    file_handler = logging.FileHandler('FM_log/{}.log'.format(config.job_time))
     file_handler.setLevel(logging.INFO)
     file_formatter = logging.Formatter(
         "[%(asctime)s - %(name)s - %(levelname)s] %(pathname)s:%(lineno)d\n%(message)s\n\n"

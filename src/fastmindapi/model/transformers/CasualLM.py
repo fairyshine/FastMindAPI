@@ -9,7 +9,7 @@ class AutoModel:
         pass
 
     @classmethod
-    def from_path(model_dir_path: str):
+    def from_path(model_path: str):
         from transformers import AutoModelForCausalLM, AutoTokenizer
-        return AutoModel(AutoTokenizer.from_pretrained(model_dir_path),
-                         AutoModelForCausalLM.from_pretrained(model_dir_path))
+        return AutoModel(AutoTokenizer.from_pretrained(model_path),
+                         AutoModelForCausalLM.from_pretrained(model_path, device_map="auto"))

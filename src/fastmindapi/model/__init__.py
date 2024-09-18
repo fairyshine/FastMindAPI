@@ -1,20 +1,25 @@
 from .transformers.CasualLM import AutoModel as TransformersCausalLM
+from .llama_cpp.LLM import LLM as LlamacppLLM
 
 class ModelModule:
     def __init__(self):
-        self.avaliable_models = dict()
-        self.loaded_models = dict()
+        self.available_models = {}
+        self.loaded_models = {}
 
-    def load_model(self, model_name: str, model_type: str=None, model_path: str=None):
+    def load_model(self, model_name: str, model):
+        self.loaded_models[model_name] = model
+
+    def load_model_from_path(self, model_name: str):
         '''
         Load the specific model.
         '''
-        # 更新模组的模型信息
-        if model_name not in self.avaliable_models:
-            self.avaliable_models[model_name] = dict()
+        model_type = self.available_models[model_name]["model_type"]
+        model_path = self.available_models[model_name]["model_path"]
         
         # 匹配模型类型
         match model_type:
-            case "TransformersCasualLM":
-                self.loaded_models[model_name] = TransformersCausalLM(model_path)
+            case "TransformersCausalLM":
+                self.loaded_models[model_name] = TransformersCausalLM.from_path(model_path)
+            case "LLamacppLLM":
+                self.loaded_models[model_name] = LlamacppLLM.from_path(model_path)
 
