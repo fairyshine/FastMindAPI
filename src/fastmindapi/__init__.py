@@ -3,13 +3,13 @@
 from importlib.metadata import PackageNotFoundError
 from importlib.metadata import version
 
-# from fastmindapi.utils.config import get_config
-# from fastmindapi.utils.logging import get_logger
+from fastmindapi.utils.config import get_config
+from fastmindapi.utils.logging import get_logger
 
 __all__ = [
     "__version__",
-    # "config",
-    # "logger"
+    "config",
+    "logger"
 ]
 
 # Official PEP 396
@@ -18,8 +18,8 @@ try:
 except PackageNotFoundError:
     __version__ = "unknown version"
 
-# config = get_config()
-# logger = get_logger()
+config = get_config()
+logger = get_logger()
 
 
-# logger.info("FastMindAPI (FM) initialization is completed.")
+logger.info("FastMindAPI (FM) initialization is completed.")
