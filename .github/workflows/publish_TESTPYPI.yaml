@@ -16,6 +16,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v1
 
+      - name: Clean build directories
+        run: |
+          rm -rf dist/
+          rm -rf build/
+          rm -rf *.egg-info
+
       - name: Install pypa/build
         run: >-
           python -m
