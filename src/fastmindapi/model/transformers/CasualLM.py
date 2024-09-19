@@ -12,7 +12,9 @@ class AutoModel:
                          AutoModelForCausalLM.from_pretrained(model_path, device_map="auto"))
 
     def generate(self, input_text: str):
-        output_text = self.model.generate(input_text)
+        inputs = self.tokenizer(input_text, return_tensors="pt").to(self.model.device)
+        outputs = self.model.generate(**inputs, max_new_tokens=12)
+        output_text = self.tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
         return output_text
     
     def generate_next_token(self):

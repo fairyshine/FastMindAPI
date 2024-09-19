@@ -5,7 +5,7 @@ from ..router.model import get_model_router
 
 from ... import logger
 
-class Client:
+class Server:
     def __init__(self):
         self.logger = logger
 

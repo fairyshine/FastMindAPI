@@ -16,13 +16,13 @@ def get_logger() -> logging.Logger:
     )
 
     # 如果日志输出文件夹不存在，则创建文件夹
-    os.makedirs("FMAPI_log/", exist_ok=True)
+    os.makedirs("FM_log/", exist_ok=True)
 
     # 1. 实例化写入日志文件的Handler
     file_handler = logging.FileHandler('FM_log/{}.log'.format(config.job_time))
     file_handler.setLevel(logging.INFO)
     file_formatter = logging.Formatter(
-        "[%(asctime)s - %(name)s - %(levelname)s] %(pathname)s:%(lineno)d\n%(message)s\n\n"
+        "[%(asctime)s - %(name)s - %(levelname)s] %(pathname)s:%(lineno)d\n%(message)s"
     )
     file_handler.setFormatter(file_formatter)
 

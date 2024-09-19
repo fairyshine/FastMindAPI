@@ -24,4 +24,5 @@ logger = get_logger()
 
 logger.info("FastMindAPI (FM) initialization is completed.")
 
-from .api.server import Client  # noqa: F401, E402
+from .server.core import Server  # noqa: F401, E402
+from .client.core import Client  # noqa: F401, E402

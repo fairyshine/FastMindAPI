@@ -1,6 +1,5 @@
 from .transformers.CasualLM import AutoModel as TransformersCausalLM
 from .llama_cpp.LLM import LLM as LlamacppLLM
-from .. import logger
 
 class ModelModule:
     def __init__(self):
@@ -16,8 +15,6 @@ class ModelModule:
         '''
         model_type = self.available_models[model_name]["model_type"]
         model_path = self.available_models[model_name]["model_path"]
-
-        logger.info("model_path:"+model_path)
         
         # 匹配模型类型
         match model_type:

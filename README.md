@@ -1,7 +1,7 @@
 # FastMindAPI
 An easy-to-use, high-performance(?) backend for serving LLMs and other AI models, built on FastAPI.
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Install
 
@@ -11,21 +11,37 @@ pip install fastmindapi
 
 ### Use
 
+#### Run the server 
+
 ```Python
 import fastmindapi as FM
 
-client = FM.Client()
-client.run()
+server = FM.Server()
+server.run()
 ```
 
-## Features
+#### Access via client / HTTP requests
+
+```python
+import fastmindapi as FM
+
+client = FM.Client(IP="x.x.x.x", PORT=xxx) # 127.0.0.1:8000 for default
+```
+
+```
+curl http://IP:PORT/docs#/
+```
+
+> We primarily maintain the backend server; the client is provided for reference only. The main usage is through sending HTTP requests. (We might release FM-gui in the future.)
+
+## ✨ Features
 
 ### Model: Support models with various backends
 
-- ✅ [Transformers](https://github.com/huggingface/transformers)
+- ✅  [Transformers](https://github.com/huggingface/transformers)
   - `TransformersCausalLM` ( `AutoModelForCausalLM`)
 
-- [llama.cpp](https://github.com/abetlen/llama-cpp-python)
+- ✅  [llama.cpp](https://github.com/abetlen/llama-cpp-python)
   - `LlamacppLM` (`Llama`)
 
 - [MLC LLM](https://llm.mlc.ai)

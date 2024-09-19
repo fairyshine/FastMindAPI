@@ -1,7 +1,7 @@
 import tests_settings  # noqa: F401
 import fastmindapi as FM
 
-client = FM.Client()
+server = FM.Server()
 
 # client.module["model"].available_models["llama3"]={
 #     "model_type": "LlamacppLLM",
@@ -9,4 +9,10 @@ client = FM.Client()
 # }
 # client.module["model"].load_model_from_path("llama3")
 
-client.run()
+# server.module["model"].available_models["gemma2"]={
+#     "model_type": "TransformersCausalLM",
+#     "model_path": "/Users/wumengsong/Resource/gemma-2-2b"
+# }
+# server.module["model"].load_model_from_path("gemma2")
+
+server.run()

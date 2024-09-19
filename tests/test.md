@@ -19,5 +19,22 @@ curl http://127.0.0.1:8000/model/generate \
   "prompt": "Do you know something about Dota2?"
 }'
 
+
+curl http://127.0.0.1:8000/model/add_info \
+  -H "Content-Type: application/json" \
+  -d '{
+  "model_name": "gemma2",
+  "model_type": "TransformersCausalLM",
+  "model_path": "/Users/wumengsong/Resource/gemma-2-2b"
+}'
+
+curl http://127.0.0.1:8000/model/load/gemma2
+
+curl http://127.0.0.1:8000/model/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+  "model_name": "gemma2",
+  "prompt": "Do you know something about Dota2?"
+}'
 ```
 
