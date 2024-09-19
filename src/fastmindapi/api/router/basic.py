@@ -7,13 +7,11 @@ def get_index_info(request: Request):
 
 def get_available_models(request: Request):
     client = request.app.state.client
-    client.module["model"].available_models
-    return 
+    return client.module["model"].available_models 
 
 def get_loaded_models(request: Request):
     client = request.app.state.client
-    client.module["model"].loaded_models
-    return 
+    return [model_name for model_name in client.module["model"].loaded_models]
 
 def get_basic_router():
     router = APIRouter(prefix=PREFIX)
