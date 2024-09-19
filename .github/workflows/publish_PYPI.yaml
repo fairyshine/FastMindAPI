@@ -36,6 +36,10 @@ jobs:
           --outdir dist/
           .
 
+      - name: Test connectivity to PyPI
+        run: |
+          curl -I https://upload.pypi.org/legacy/
+
       - name: publish to PYPI
         uses: pypa/gh-action-pypi-publish@v1.8.12
         with:

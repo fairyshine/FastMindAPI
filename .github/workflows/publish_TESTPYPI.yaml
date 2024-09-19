@@ -1,4 +1,4 @@
-name: publish python package to PyPI
+name: publish python package to TESTPyPI
 
 on:
   push:
@@ -36,6 +36,10 @@ jobs:
           --wheel
           --outdir dist/
           .
+
+      - name: Test connectivity to TESTPyPI
+        run: |
+          curl -I https://test.pypi.org/legacy/
 
       - name: publish to Test PYPI
         uses: pypa/gh-action-pypi-publish@v1.8.12
