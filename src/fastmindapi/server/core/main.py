@@ -11,8 +11,8 @@ class Server:
 
         # 设置FastAPI服务
         self.app = app
-        # 将 Client 实例存储到 app.state
-        self.app.state.client = self
+        # 将 Server 实例存储到 app.state
+        self.app.state.server = self
         self.port = 8000
         self.deploy_mode = "uvicorn"
         self.local_mode = False

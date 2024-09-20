@@ -34,8 +34,16 @@ curl http://127.0.0.1:8000/model/call \
   -H "Content-Type: application/json" \
   -d '{
   "model_name": "gemma2",
-  "prompt": "Do you know something about Dota2?",
+  "input_text": "Do you know something about Dota2?",
   "max_new_tokens": 2
+}'
+
+curl http://127.0.0.1:8000/model/generate/gemma2 \
+  -H "Content-Type: application/json" \
+  -d '{
+  "input_text": "Do you know something about Dota2?",
+  "max_new_tokens": 2,
+  "return_logits": true
 }'
 ```
 
