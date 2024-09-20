@@ -40,7 +40,7 @@ curl http://IP:PORT/docs#/
 
 - ✅  [Transformers](https://github.com/huggingface/transformers)
   - `TransformersCausalLM` ( `AutoModelForCausalLM`)
-  - PeftModel
+  - `PeftCausalLM` ( `PeftModelForCausalLM` )
   
 - ✅  [llama.cpp](https://github.com/abetlen/llama-cpp-python)
   - `LlamacppLM` (`Llama`)
