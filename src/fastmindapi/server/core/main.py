@@ -26,8 +26,8 @@ class Server:
         self.app.include_router(get_model_router())
 
 
-    def load_model(self, model_name: str, model):
-        self.module["model"].load_model(model_name, model)
+    # def load_model(self, model_name: str, model):
+    #     self.module["model"].load_model(model_name, model)
 
     def run(self):
         match self.deploy_mode:

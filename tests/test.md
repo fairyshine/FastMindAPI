@@ -30,11 +30,12 @@ curl http://127.0.0.1:8000/model/add_info \
 
 curl http://127.0.0.1:8000/model/load/gemma2
 
-curl http://127.0.0.1:8000/model/generate \
+curl http://127.0.0.1:8000/model/call \
   -H "Content-Type: application/json" \
   -d '{
   "model_name": "gemma2",
-  "prompt": "Do you know something about Dota2?"
+  "prompt": "Do you know something about Dota2?",
+  "max_new_tokens": 2
 }'
 ```
 

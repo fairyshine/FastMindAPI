@@ -32,7 +32,7 @@ client = FM.Client(IP="x.x.x.x", PORT=xxx) # 127.0.0.1:8000 for default
 curl http://IP:PORT/docs#/
 ```
 
-> We primarily maintain the backend server; the client is provided for reference only. The main usage is through sending HTTP requests. (We might release FM-gui in the future.)
+> 🪧 **We primarily maintain the backend server; the client is provided for reference only.** The main usage is through sending HTTP requests. (We might release FM-GUI in the future.)
 
 ## ✨ Features
 
@@ -40,7 +40,8 @@ curl http://IP:PORT/docs#/
 
 - ✅  [Transformers](https://github.com/huggingface/transformers)
   - `TransformersCausalLM` ( `AutoModelForCausalLM`)
-
+  - PeftModel
+  
 - ✅  [llama.cpp](https://github.com/abetlen/llama-cpp-python)
   - `LlamacppLM` (`Llama`)
 

@@ -1,13 +1,15 @@
-from .transformers.CasualLM import AutoModel as TransformersCausalLM
-from .llama_cpp.LLM import LLM as LlamacppLLM
+from .transformers.CasualLM import TransformersCausalLM
+from .transformers.PeftModel import PeftCausalLM
+from .llama_cpp.LLM import LlamacppLLM
 
 class ModelModule:
     def __init__(self):
         self.available_models = {}
         self.loaded_models = {}
 
-    def load_model(self, model_name: str, model):
-        self.loaded_models[model_name] = model
+    # TODO rewrite load_model, also in server.core.main
+    # def load_model(self, model_name: str, model):
+    #     self.loaded_models[model_name] = model
 
     def load_model_from_path(self, model_name: str):
         '''
@@ -20,6 +22,11 @@ class ModelModule:
         match model_type:
             case "TransformersCausalLM":
                 self.loaded_models[model_name] = TransformersCausalLM.from_path(model_path)
+            case "PeftCausalLM":
+                model_foundation = self.available_models[model_name]["model_foundation"]
+                base_model = self.loaded_models[model_foundation]
+                assert isinstance(base_model, TransformersCausalLM)
+                self.load_models[model_name] = PeftCausalLM.from_path(base_model, model_path)
             case "LlamacppLLM":
                 self.loaded_models[model_name] = LlamacppLLM.from_path(model_path)
 
