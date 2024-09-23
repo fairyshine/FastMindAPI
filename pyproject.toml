@@ -29,3 +29,6 @@ include = ["fastmindapi"]
 "Homepage" = "https://github.com/fairyshine/FastMindAPI/"
 "Bug Tracker" = "https://github.com/fairyshine/FastMindAPI/issues"
 "Source" = "https://github.com/fairyshine/FastMindAPI"
+
+[project.scripts]
+fastmindapi-server = "fastmindapi.cli:run_server"

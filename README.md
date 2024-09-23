@@ -13,7 +13,13 @@ pip install fastmindapi
 
 #### Run the server 
 
+```shell
+# in Shell
+fastmindapi-server --port 8000
+```
+
 ```Python
+# in Python
 import fastmindapi as FM
 
 server = FM.Server()
@@ -22,14 +28,18 @@ server.run()
 
 #### Access via client / HTTP requests
 
+```shell
+curl http://IP:PORT/docs#/
+```
+
 ```python
 import fastmindapi as FM
 
 client = FM.Client(IP="x.x.x.x", PORT=xxx) # 127.0.0.1:8000 for default
-```
 
-```
-curl http://IP:PORT/docs#/
+client.add_model_info_list(model_info_list)
+client.load_model(model_name)
+client.generate(model_name, generation_request)
 ```
 
 > 🪧 **We primarily maintain the backend server; the client is provided for reference only.** The main usage is through sending HTTP requests. (We might release FM-GUI in the future.)
