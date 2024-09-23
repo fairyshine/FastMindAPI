@@ -18,14 +18,17 @@ class TransformersCausalLM:
         with torch.no_grad():
             outputs = self.model.generate(**inputs, max_new_tokens=max_new_tokens)
         full_text = self.tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-        output_text = full_text[len(input_text):]
+        # output_text = full_text[len(input_text):]
+        re_inputs = self.tokenizer.batch_decode(inputs.input_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
+        output_text = full_text[len(re_inputs):]
         return output_text
     
-    def generate(self, 
+    def generate(self,
                  input_text: str,
                  max_new_tokens: int = 256,
                  return_logits: bool = False,
-                 logits_top_k: int = 10):
+                 logits_top_k: int = 10,
+                 stop_strings: list[str] = None):
         import torch
         import torch.nn.functional as F
 
@@ -34,11 +37,17 @@ class TransformersCausalLM:
         input_token_list = [self.tokenizer.decode([token_id]) for token_id in input_id_list]
 
         with torch.no_grad():
-            outputs = self.model.generate(**inputs, max_new_tokens=max_new_tokens)
+            outputs = self.model.generate(**inputs, 
+                                          max_new_tokens=max_new_tokens,
+                                          stop_strings=stop_strings,
+                                          tokenizer=self.tokenizer)
         full_id_list = outputs[0].tolist()
         full_token_list = [self.tokenizer.decode([token_id]) for token_id in full_id_list]
         full_text = self.tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-        output_text = full_text[len(input_text):]
+        
+        # output_text = full_text[len(input_text):] 
+        re_inputs = self.tokenizer.batch_decode(inputs.input_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
+        output_text = full_text[len(re_inputs):]
 
         logits_list = None
         if return_logits:

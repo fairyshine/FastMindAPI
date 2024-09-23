@@ -15,6 +15,7 @@ class GenerationRequest(BaseModel):
     max_new_tokens: int = None
     return_logits: bool = False
     logits_top_k: int = 10
+    stop_strings: list[str] = None
 
     model_config=ConfigDict(protected_namespaces=())
 
@@ -46,14 +47,14 @@ def load_model(request: Request, model_name: str):
         return True
     except Exception as e:
         return "【Error】: "+str(e)
-    
+
 def unload_model(request: Request, model_name: str):
     server = request.app.state.server
     if model_name in server.module["model"].loaded_models:
         del server.module["model"].loaded_models[model_name]
-        return model_name+" is released successfully."
+        return f"{model_name} is released successfully."
     else:
-        return model_name+" is not loaded right now."
+        return f"{model_name} is not loaded right now."
 
 def simple_generate(request: Request, model_name: str, item: GenerationRequest):
     server = request.app.state.server
@@ -66,7 +67,7 @@ def generate(request: Request, model_name: str, item: GenerationRequest):
     try:
         assert model_name in server.module["model"].loaded_models
     except AssertionError:
-        return "【Error】: {model_name} is not loaded."
+        return f"【Error】: {model_name} is not loaded."
     outputs = server.module["model"].loaded_models[model_name].generate(**item.model_dump())
     return outputs
 
