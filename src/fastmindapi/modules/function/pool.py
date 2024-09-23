@@ -1,8 +1,8 @@
 import os
+import sys
 import re
 
-from ...utils.file import read_JSON, write_JSON
-from . import post_process_execution_result
+from ...utils.file import read_JSON
 from .parser import get_function_info
 # from .param import get_tool_param
 
@@ -33,19 +33,24 @@ def parse_docstring(input_string: str) -> dict | str:
         return "No match found."
 
 
-class ToolPool:
-    def __init__(self, tool_package_name):
-        self.tooldir = tool_package_name
-        self.toolpath = read_JSON(os.path.join("src/toolpool",self.tooldir,"tools.json"))
+class FunctionPool:
+    def __init__(self, code_dir_path):
+        self.code_dir_path = code_dir_path
+        self.code_father_dir_path = "/".join(self.code_dir_path.strip().rstrip("/").split("/")[:-1])
+        if self.code_father_dir_path not in sys.path:
+            sys.path.append(self.code_father_dir_path)
+        self.tool_package_name = self.code_dir_path.strip().rstrip("/").split("/")[-1]
+
+        self.meta_data = read_JSON(os.path.join(self.code_dir_path, "tools.json"))
         self.toolrawinfo = {}
-        self.get_toolrawinfo_from_toolpath()
+        self.get_toolrawinfo_from_metapath()
         self.toolinfo = {}
         self.process_toolinfo()
 
-    def get_toolrawinfo_from_toolpath(self):
-        for tool_name in self.toolpath:
-            tool_relative_path = self.toolpath[tool_name]["path"]
-            self.toolrawinfo[tool_name] = get_function_info(os.path.join("src/toolpool",self.tooldir,tool_relative_path))[tool_name]
+    def get_toolrawinfo_from_metapath(self):
+        for tool_name in self.meta_data:
+            tool_relative_path = self.meta_data[tool_name]["path"]
+            self.toolrawinfo[tool_name] = get_function_info(os.path.join(self.code_dir_path,tool_relative_path))[tool_name]
 
     def process_toolinfo(self):
         for tool_name in self.toolrawinfo:
@@ -70,12 +75,12 @@ class ToolPool:
             self.toolinfo[tool_name] = tool_info
 
     def call_tool(self, tool_name: str, parameters_list: list):
-        tool_path = self.toolpath[tool_name]["path"]
-        import_cmd = "from toolpool."+self.tooldir+"."+tool_path.split(".py")[0].replace("/",".")+" import "+tool_name
+        tool_path = self.meta_data[tool_name]["path"]
+        import_cmd = "from "+self.tool_package_name+"."+tool_path.split(".py")[0].replace("/",".")+" import "+tool_name
         exec(import_cmd)
         calling_cmd = tool_name+"("+",".join([str(param) if type(param) is not str else '"'+param+'"' for param in parameters_list])+")"
         calling_result = eval(calling_cmd)
-        calling_result = post_process_execution_result(calling_result)
+        # calling_result = post_process_execution_result(calling_result)
         return calling_result
         # try:
         #     return eval(calling_cmd)

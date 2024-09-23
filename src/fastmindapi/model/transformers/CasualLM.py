@@ -9,8 +9,8 @@ class TransformersCausalLM:
     @classmethod
     def from_path(self, model_path: str):
         from transformers import AutoModelForCausalLM, AutoTokenizer
-        return TransformersCausalLM(AutoTokenizer.from_pretrained(model_path),
-                         AutoModelForCausalLM.from_pretrained(model_path, device_map="auto"))
+        return TransformersCausalLM(AutoTokenizer.from_pretrained(model_path, trust_remote_code=True),
+                         AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True, device_map="auto"))
 
     def __call__(self, input_text: str, max_new_tokens: int = 256):
         import torch
@@ -44,7 +44,7 @@ class TransformersCausalLM:
         full_id_list = outputs[0].tolist()
         full_token_list = [self.tokenizer.decode([token_id]) for token_id in full_id_list]
         full_text = self.tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-        
+
         # output_text = full_text[len(input_text):] 
         re_inputs = self.tokenizer.batch_decode(inputs.input_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
         output_text = full_text[len(re_inputs):]

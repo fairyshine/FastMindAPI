@@ -1,4 +1,4 @@
-```
+```shell
 curl http://127.0.0.1:8000/available_models
 curl http://127.0.0.1:8000/loaded_models
 
@@ -45,5 +45,20 @@ curl http://127.0.0.1:8000/model/generate/gemma2 \
   "return_logits": true,
   "stop_strings": ["\n"]
 }'
+```
+
+```shell
+curl http://10.140.24.104:10001/available_models
+curl http://10.140.24.104:10001/loaded_models
+curl http://10.140.24.104:10001/model/add_info \
+  -H "Content-Type: application/json" \
+  -d '{
+  "model_name": "gemma2",
+  "model_type": "TransformersCausalLM",
+  "model_path": "/Users/wumengsong/Resource/gemma-2-2b"
+}'
+
+curl http://10.140.24.104:10001/model/load/ChemLLM
+
 ```
 

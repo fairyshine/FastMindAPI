@@ -24,6 +24,8 @@ class ModelModule:
                 self.loaded_models[model_name] = TransformersCausalLM.from_path(model_path)
             case "PeftCausalLM":
                 model_foundation = self.available_models[model_name]["model_foundation"]
+                if model_foundation not in self.loaded_models:
+                    self.loaded_models[model_foundation] = TransformersCausalLM.from_path(self.available_models[model_foundation]["model_path"])
                 base_model = self.loaded_models[model_foundation]
                 assert isinstance(base_model, TransformersCausalLM)
                 self.load_models[model_name] = PeftCausalLM.from_path(base_model, model_path)
