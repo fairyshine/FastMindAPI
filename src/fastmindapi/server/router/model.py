@@ -38,6 +38,8 @@ def add_model_info(request: Request, item: BasicModel):
             "model_type": item.model_type,
             "model_path": item.model_path
             }
+    if item.model_foundation is not None:
+        server.module["model"].available_models[item.model_name]["model_foundation"] = item.model_foundation
     return True
 
 def load_model(request: Request, model_name: str):

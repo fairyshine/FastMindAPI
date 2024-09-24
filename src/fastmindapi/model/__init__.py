@@ -28,7 +28,7 @@ class ModelModule:
                     self.loaded_models[model_foundation] = TransformersCausalLM.from_path(self.available_models[model_foundation]["model_path"])
                 base_model = self.loaded_models[model_foundation]
                 assert isinstance(base_model, TransformersCausalLM)
-                self.load_models[model_name] = PeftCausalLM.from_path(base_model, model_path)
+                self.loaded_models[model_name] = PeftCausalLM.from_path(base_model, model_path)
             case "LlamacppLLM":
                 self.loaded_models[model_name] = LlamacppLLM.from_path(model_path)
 
