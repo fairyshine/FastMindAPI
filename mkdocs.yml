@@ -48,6 +48,12 @@ plugins:
           paths: [src]
   - search # built-in 搜索插件
 
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+
 nav:
   - Home:
     - index.md
@@ -57,3 +63,5 @@ nav:
     - User Guide: Quick_Start/user_guide.md
   - Tutorial: Tutorial/tutorial.md
   - Documentation: Documentation/API.md
+  - Development:
+    - Build Custom Function Library: Development/FunctionLibrary.md

@@ -1,5 +1,5 @@
 import tests_settings  # noqa: F401
-from fastmindapi.modules.function import FunctionModule
+from fastmindapi.modules import FunctionModule
 
 package_list = [
     "/Users/wumengsong/Code/PJLab/ChemAgent/chem_lib"
