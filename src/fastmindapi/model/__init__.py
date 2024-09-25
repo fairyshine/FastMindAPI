@@ -1,4 +1,4 @@
-from .transformers.CasualLM import TransformersCausalLM
+from .transformers.CausalLM import TransformersCausalLM
 from .transformers.PeftModel import PeftCausalLM
 from .llama_cpp.LLM import LlamacppLLM
 

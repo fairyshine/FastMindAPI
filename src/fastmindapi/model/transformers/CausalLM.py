@@ -1,4 +1,6 @@
 
+from ...server.router.openai import ChatMessage
+
 class TransformersCausalLM:
     def __init__(self, tokenizer, model):
         self.tokenizer = tokenizer
@@ -103,5 +105,51 @@ class TransformersCausalLM:
 
         return generation_output
 
-    def chat(self):
-        pass
+    def chat(self, messages: list[ChatMessage], max_completion_tokens: int = None):
+        import torch
+        import time
+
+        # 将消息列表转换为单个输入文本
+        input_text = ""
+        for message in messages:
+            role = message.role
+            content = message.content
+            input_text += f"{role}: {content}\n"
+
+        inputs = self.tokenizer(input_text, return_tensors="pt").to(self.model.device)
+        
+        generate_kwargs = {
+            "max_new_tokens": max_completion_tokens,
+        }
+
+        with torch.no_grad():
+            outputs = self.model.generate(**inputs, **generate_kwargs)
+        
+        full_texts = self.tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)
+        re_inputs = self.tokenizer.batch_decode(inputs.input_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
+        output_texts = [full_text[len(re_inputs):] for full_text in full_texts]
+
+        choices = []
+        for i, output_text in enumerate(output_texts):
+            choices.append({
+                "index": i,
+                "message": {
+                    "role": "assistant",
+                    "content": output_text
+                },
+                "finish_reason": "stop"
+            })
+
+        response = {
+            "id": f"chatcmpl-{int(time.time())}",
+            "object": "chat.completion",
+            "created": int(time.time()),
+            "model": self.model.config.name_or_path,
+            "choices": choices,
+            "usage": {
+                "prompt_tokens": inputs.input_ids.shape[1],
+                "completion_tokens": sum(len(self.tokenizer.encode(text)) for text in output_texts),
+                "total_tokens": inputs.input_ids.shape[1] + sum(len(self.tokenizer.encode(text)) for text in output_texts)
+            }
+        }
+        return response

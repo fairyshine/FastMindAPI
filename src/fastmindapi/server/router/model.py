@@ -23,6 +23,16 @@ class GenerationOutput(BaseModel):
     output_text: str
     logits: list
 
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+class ChatRequest(BaseModel):
+    messages: list[ChatMessage]
+    max_new_tokens: int = 256
+
+    model_config=ConfigDict(protected_namespaces=())
+
 def add_model_info(request: Request, item: BasicModel):
     server = request.app.state.server
     if item.model_name in server.module["model"].available_models:
@@ -73,6 +83,14 @@ def generate(request: Request, model_name: str, item: GenerationRequest):
     outputs = server.module["model"].loaded_models[model_name].generate(**item.model_dump())
     return outputs
 
+def chat(request: Request, model_name: str, item: ChatRequest):
+    server = request.app.state.server
+    try:
+        assert model_name in server.module["model"].loaded_models
+    except AssertionError:
+        return f"【Error】: {model_name} is not loaded."
+    outputs = server.module["model"].loaded_models[model_name].chat(messages=item.messages, max_new_tokens=item.max_new_tokens)
+    return outputs
 
 def get_model_router():
     router = APIRouter(prefix=PREFIX)
@@ -82,4 +100,5 @@ def get_model_router():
     router.add_api_route("/unload/{model_name}", unload_model, methods=["GET"])
     router.add_api_route("/call/{model_name}", simple_generate, methods=["POST"])
     router.add_api_route("/generate/{model_name}", generate, methods=["POST"])
+    router.add_api_route("/chat/{model_name}", chat, methods=["POST"])
     return router

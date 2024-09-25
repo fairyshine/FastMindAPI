@@ -28,10 +28,11 @@ curl http://127.0.0.1:8000/model/add_info \
   "model_path": "/Users/wumengsong/Resource/gemma-2-2b"
 }'
 
-curl http://127.0.0.1:8000/model/load/gemma2
+curl http://127.0.0.1:8000/model/load/gemma2 -H "Authorization: Bearer sk-anything"
 
 curl http://127.0.0.1:8000/model/call/gemma2 \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sk-anything" \
   -d '{
   "input_text": "Do you know something about Dota2?",
   "max_new_tokens": 2
@@ -39,11 +40,27 @@ curl http://127.0.0.1:8000/model/call/gemma2 \
 
 curl http://127.0.0.1:8000/model/generate/gemma2 \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sk-anything" \
   -d '{
   "input_text": "Do you know something about Dota2?",
   "max_new_tokens": 2,
   "return_logits": true,
   "stop_strings": ["\n"]
+}'
+
+curl http://127.0.0.1:8000/openai/chat/completions -H "Content-Type: application/json"   -H "Authorization: Bearer sk-anything" -d '{
+  "model": "gemma2",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a test assistant."
+    },
+    {
+      "role": "user",
+      "content": "Do you know something about Dota2?"
+    }
+  ],
+  "max_completion_tokens": 2
 }'
 ```
 

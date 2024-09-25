@@ -1,4 +1,4 @@
-from .CasualLM import TransformersCausalLM
+from .CausalLM import TransformersCausalLM
 
 class PeftCausalLM(TransformersCausalLM):
     def __init__(self, base_model: TransformersCausalLM, peft_model):
