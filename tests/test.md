@@ -22,6 +22,7 @@ curl http://127.0.0.1:8000/model/generate \
 
 curl http://127.0.0.1:8000/model/add_info \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sk-anything" \
   -d '{
   "model_name": "gemma2",
   "model_type": "TransformersCausalLM",

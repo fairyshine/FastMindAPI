@@ -5,9 +5,16 @@ from ..router.model import get_model_router
 from ..router.openai import get_openai_router
 from ... import logger
 
+from fastapi import Depends, HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+API_security = HTTPBearer()
+
 class Server:
-    def __init__(self):
+    def __init__(self, api_key: str = "sk-anything"):
         self.logger = logger
+
+        self.api_key = api_key
 
         # 设置FastAPI服务
         self.app = app
@@ -22,12 +29,15 @@ class Server:
         self.module["model"] = ModelModule()
 
         # 加载路由
-        self.app.include_router(get_basic_router())
-        self.app.include_router(get_model_router())
-        self.app.include_router(get_openai_router())
+        self.app.include_router(get_basic_router(), dependencies=[])
+        self.app.include_router(get_model_router(), dependencies=[Depends(self.verify_token)])
+        self.app.include_router(get_openai_router(), dependencies=[Depends(self.verify_token)])
 
-        # def load_model(self, model_name: str, model):
-        #     self.module["model"].load_model(model_name, model)
+    def verify_token(self, credentials: HTTPAuthorizationCredentials = Depends(API_security)):
+        if credentials.credentials != self.api_key:
+            self.logger.warning(f"Invalid API key.: {credentials.credentials}")  # 记录无效的API密钥
+            raise HTTPException(status_code=403, detail="Invalid API key.")
+        self.logger.info("API Key verified successfully.")  # 记录成功的验证
 
     def run(self):
         match self.deploy_mode:
@@ -40,3 +50,5 @@ class Server:
                             log_config=None)
                 self.logger.info("Client stops running.")
 
+    # def load_model(self, model_name: str, model):
+    #     self.module["model"].load_model(model_name, model)

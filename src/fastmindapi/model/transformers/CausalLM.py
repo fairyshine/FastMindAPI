@@ -109,7 +109,7 @@ class TransformersCausalLM:
         import torch
         import time
 
-        # 将消息列表转换为单个输入文本
+        # 将消息列表转换为输入文本
         input_text = ""
         for message in messages:
             role = message.role
@@ -125,20 +125,22 @@ class TransformersCausalLM:
         with torch.no_grad():
             outputs = self.model.generate(**inputs, **generate_kwargs)
         
-        full_texts = self.tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)
+        full_text = self.tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
         re_inputs = self.tokenizer.batch_decode(inputs.input_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-        output_texts = [full_text[len(re_inputs):] for full_text in full_texts]
+        output_text = full_text[len(re_inputs):]
+        # 对output_text进行后处理
+        if output_text.lower().startswith("assistant:"):
+            output_text = output_text[len("assistant:"):].strip()
 
         choices = []
-        for i, output_text in enumerate(output_texts):
-            choices.append({
-                "index": i,
-                "message": {
-                    "role": "assistant",
-                    "content": output_text
-                },
-                "finish_reason": "stop"
-            })
+        choices.append({
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": output_text
+            },
+            "finish_reason": "stop"
+        })
 
         response = {
             "id": f"chatcmpl-{int(time.time())}",
