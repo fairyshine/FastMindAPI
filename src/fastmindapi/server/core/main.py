@@ -11,10 +11,10 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 API_security = HTTPBearer()
 
 class Server:
-    def __init__(self, api_key: str = "sk-anything"):
+    def __init__(self, API_KEY: str = "sk-anything"):
         self.logger = logger
 
-        self.api_key = api_key
+        self.api_key = API_KEY
 
         # 设置FastAPI服务
         self.app = app
