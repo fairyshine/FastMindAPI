@@ -1,4 +1,10 @@
 # FastMindAPI
+
+![PyPI - Version](https://img.shields.io/pypi/v/fastmindapi?style=flat-square&color=red) ![GitHub License](https://img.shields.io/github/license/fairyshine/FastMindAPI?style=flat-square&color=yellow) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/fairyshine/FastMindAPI?style=flat-square&color=green)
+
+![PyPI - Downloads](https://img.shields.io/pypi/dm/fastmindapi?style=flat-square&color=blue)
+
+
 An easy-to-use, high-performance(?) backend for serving LLMs and other AI models, built on FastAPI.
 
 ## 🚀 Quick Start
