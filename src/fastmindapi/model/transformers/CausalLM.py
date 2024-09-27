@@ -105,7 +105,7 @@ class TransformersCausalLM:
 
         return generation_output
 
-    def chat(self, messages: list[ChatMessage], max_completion_tokens: int = None):
+    def chat(self, messages: list[ChatMessage], max_completion_tokens: int = None, logprobs: bool = False, top_logprobs: int = 10):
         import torch
         import time
 
@@ -115,6 +115,7 @@ class TransformersCausalLM:
             role = message.role
             content = message.content
             input_text += f"{role}: {content}\n"
+        input_text += "assistant: "
 
         inputs = self.tokenizer(input_text, return_tensors="pt").to(self.model.device)
         

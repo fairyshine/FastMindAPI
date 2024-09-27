@@ -69,7 +69,9 @@ class LlamacppLLM:
 
         return generation_output
 
-    def chat(self, messages: list[ChatMessage], max_completion_tokens: int = None):
-        input_text = self.model.tokenizer.build_inputs(messages)
-        response = self.model(input_text, max_new_tokens=max_completion_tokens)
+    def chat(self, messages: list[ChatMessage], max_completion_tokens: int = None, logprobs: bool = False, top_logprobs: int = 10):
+        response = self.model.create_chat_completion(messages, 
+                                                     max_tokens=max_completion_tokens, 
+                                                     logprobs=logprobs, 
+                                                     top_logprobs=top_logprobs if logprobs else None)
         return response
