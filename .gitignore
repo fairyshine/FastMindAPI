@@ -1,4 +1,5 @@
-FM_log/*/
+FM_log/
+local_tests/
 
 # Mac System File
 **/.DS_Store
