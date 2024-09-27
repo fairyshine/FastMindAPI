@@ -8,9 +8,9 @@ class TransformersCausalLM:
         pass
 
     @classmethod
-    def from_path(self, model_path: str):
+    def from_path(cls, model_path: str):
         from transformers import AutoModelForCausalLM, AutoTokenizer
-        return TransformersCausalLM(AutoTokenizer.from_pretrained(model_path, trust_remote_code=True),
+        return cls(AutoTokenizer.from_pretrained(model_path, trust_remote_code=True),
                          AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True, device_map="auto"))
 
     def __call__(self, input_text: str, max_new_tokens: int = 256):
@@ -150,8 +150,8 @@ class TransformersCausalLM:
             "choices": choices,
             "usage": {
                 "prompt_tokens": inputs.input_ids.shape[1],
-                "completion_tokens": sum(len(self.tokenizer.encode(text)) for text in output_texts),
-                "total_tokens": inputs.input_ids.shape[1] + sum(len(self.tokenizer.encode(text)) for text in output_texts)
+                "completion_tokens": sum(len(self.tokenizer.encode(text)) for text in output_text),
+                "total_tokens": inputs.input_ids.shape[1] + sum(len(self.tokenizer.encode(text)) for text in output_text)
             }
         }
         return response

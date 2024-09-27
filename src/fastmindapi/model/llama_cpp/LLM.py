@@ -1,15 +1,15 @@
 from ...server.router.openai import ChatMessage
 from ...utils.transform import convert_numpy_float32_to_float
-
 from ... import logger
+
 class LlamacppLLM:
     def __init__(self, model):
         self.model = model
 
     @classmethod
-    def from_path(self, model_path: str):
+    def from_path(cls, model_path: str):
         from llama_cpp import Llama
-        return LlamacppLLM(Llama(model_path, n_gpu_layers=-1, logits_all=True))
+        return cls(Llama(model_path, n_gpu_layers=-1, logits_all=True))
     
     def __call__(self, input_text: str, max_new_tokens: int=256):
         response = self.model(input_text, max_tokens=max_new_tokens)

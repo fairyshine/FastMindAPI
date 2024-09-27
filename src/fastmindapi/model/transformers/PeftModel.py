@@ -8,7 +8,7 @@ class PeftCausalLM(TransformersCausalLM):
         pass
 
     @classmethod
-    def from_path(self, base_model: TransformersCausalLM, model_path: str):
+    def from_path(cls, base_model: TransformersCausalLM, model_path: str):
         from peft import PeftModelForCausalLM
-        return PeftCausalLM(base_model,
+        return cls(base_model,
                             PeftModelForCausalLM.from_pretrained(base_model.model,model_path))

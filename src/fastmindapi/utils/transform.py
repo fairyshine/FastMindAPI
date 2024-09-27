@@ -12,6 +12,7 @@ def convert_numpy_float32_to_float(d):
         return d
     
 def convert_openai_logprobs(logprobs):
+    logprobs = logprobs.model_dump()
     logits_list = []
     for token_info in logprobs["content"]:
         logits = {

@@ -9,9 +9,9 @@ class OpenAIChatModel:
         self.model_name = model_name
         pass
 
-    # @classmethod
-    # def from_path(self, model_path: str):
-    #     ...
+    @classmethod
+    def from_client(cls, client, model_name: str):
+        return cls(client, model_name)
 
     def __call__(self, input_text: str, max_new_tokens: int = 256):
         try:
@@ -65,11 +65,12 @@ class OpenAIChatModel:
         try:
             completion = self.client.chat.completions.create(
             model= self.model_name,
-            messages=messages.model_dump(),
+            messages=messages,
             max_completion_tokens=max_completion_tokens,
             logprobs=logprobs,
-            top_logprobs=top_logprobs
+            top_logprobs=top_logprobs if logprobs else None,
             )
-            return completion
+            logger.info(completion.model_dump())
+            return completion.choices[0].message.content
         except Exception as e:
-            return e
+            return "【Error】: " + str(e)

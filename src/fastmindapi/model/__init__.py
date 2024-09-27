@@ -1,11 +1,13 @@
 from .transformers.CausalLM import TransformersCausalLM
 from .transformers.PeftModel import PeftCausalLM
 from .llama_cpp.LLM import LlamacppLLM
+from .openai.ChatModel import OpenAIChatModel
 
 class ModelModule:
     def __init__(self):
         self.available_models = {}
         self.loaded_models = {}
+        self.client = {}
 
     # TODO rewrite load_model, also in server.core.main
     # def load_model(self, model_name: str, model):
@@ -31,4 +33,6 @@ class ModelModule:
                 self.loaded_models[model_name] = PeftCausalLM.from_path(base_model, model_path)
             case "LlamacppLLM":
                 self.loaded_models[model_name] = LlamacppLLM.from_path(model_path)
+            case "OpenAIChatModel":
+                self.loaded_models[model_name] = OpenAIChatModel.from_client(self.client["OpenAI"], model_name)
 
