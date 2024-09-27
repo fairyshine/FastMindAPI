@@ -1,4 +1,3 @@
-
 from ...server.router.openai import ChatMessage
 
 class TransformersCausalLM:
@@ -69,10 +68,10 @@ class TransformersCausalLM:
             assert sequence_length == len(full_id_list)
 
             # 遍历每个位置，打印 top_k 的 token 和 logits
-            logits_list = []
-            for i in range(sequence_length):
-                token_id = full_id_list[i]
-                token = full_token_list[i]
+            logits_list = [{"id": full_id_list[0], "token": full_token_list[0]}]
+            for i in range(sequence_length-1):
+                token_id = full_id_list[i+1]
+                token = full_token_list[i+1]
                 # print(f"Position {i} (Token: {repr(token)}):")
                 logits = {
                     "id": token_id,
@@ -80,7 +79,8 @@ class TransformersCausalLM:
                     "pred_id": [],
                     "pred_token": [],
                     "logits": [],
-                    "probs": []
+                    "probs": [],
+                    "logprobs": []
                 }
                 for j in range(logits_top_k):
                     pred_token_id = topk_tokens[0, i, j].item()
