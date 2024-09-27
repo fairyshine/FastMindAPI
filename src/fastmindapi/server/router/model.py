@@ -6,7 +6,7 @@ PREFIX = "/model"
 class BasicModel(BaseModel):
     model_name: str
     model_type: str
-    model_path: str
+    model_path: str = None
     model_foundation: str = None # for Peft Model
     model_config = ConfigDict(protected_namespaces=())
 

@@ -47,7 +47,7 @@ class LlamacppLLM:
                     "token": full_token_list[i+1],
                     "pred_id": [],
                     "pred_token": [],
-                    "logits": [],
+                    # "logits": [],
                     "probs": [],
                     "logprobs": []
                 }

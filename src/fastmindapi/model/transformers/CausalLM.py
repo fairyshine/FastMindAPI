@@ -80,7 +80,7 @@ class TransformersCausalLM:
                     "pred_token": [],
                     "logits": [],
                     "probs": [],
-                    "logprobs": []
+                    # "logprobs": []
                 }
                 for j in range(logits_top_k):
                     pred_token_id = topk_tokens[0, i, j].item()
