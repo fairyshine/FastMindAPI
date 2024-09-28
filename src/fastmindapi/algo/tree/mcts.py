@@ -17,20 +17,22 @@ class MCTSState(ABC):
     def __init__(self):
         ...
 
-    def next_state(self):
+    def next_state(self): # 🌟
         ...
 
-    def terminal(self):
+    def terminal(self) -> bool: # 🌟
         ...
 
-    def reward(self):
+    def reward(self): # 🌟
         ...
 
-    def __hash__(self):
+    def __hash__(self): # 🌟
         ...
 
     def __eq__(self,other):
-        ...
+        if hash(self)==hash(other):
+            return True
+        return False
 
     def __repr__(self):
         ...
@@ -48,7 +50,7 @@ class MCTSNode:
 	def update(self,reward):
 		self.reward+=reward
 		self.visits+=1
-	def fully_expanded(self, num_moves_lambda):
+	def fully_expanded(self, num_moves_lambda) -> bool: # 🌟 rewrite
 		num_moves = self.state.num_moves
 		if num_moves_lambda is not None:
 			num_moves = num_moves_lambda(self)
@@ -61,7 +63,7 @@ class MCTSNode:
 
 class MCTS:
     @classmethod
-    def UCTSearch(cls, budget, root, num_moves_lambda = None):
+    def UCT_search(cls, budget, root, num_moves_lambda = None):
         for iter in range(int(budget)):
             if iter%10000==9999:
                 logger.info("simulation: %d"%iter)
@@ -139,7 +141,7 @@ if __name__=="__main__":
             self.turn=turn
             self.moves=moves
         def next_state(self):
-            nextmove=random.choice([x*self.turn for x  in self.MOVES])
+            nextmove=random.choice([x*self.turn for x in self.MOVES])
             next=TESTState(self.value+nextmove, self.moves+[nextmove],self.turn-1)
             return next
         def terminal(self):
@@ -166,7 +168,7 @@ if __name__=="__main__":
 
     current_node=MCTSNode(TESTState())
     for l in range(args.levels):
-        current_node=MCTS.UCTSearch(args.num_sims/(l+1),current_node)
+        current_node=MCTS.UCT_search(args.num_sims/(l+1),current_node)
         print("level %d"%l)
         print("Num Children: %d"%len(current_node.children))
         for i,c in enumerate(current_node.children):

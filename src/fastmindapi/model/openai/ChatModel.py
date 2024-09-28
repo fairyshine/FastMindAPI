@@ -43,14 +43,16 @@ class OpenAIChatModel:
                 ],
                 max_completion_tokens=max_new_tokens,
                 logprobs=return_logits,
-                top_logprobs=logits_top_k,
+                top_logprobs=logits_top_k if return_logits else None,
                 stop=stop_strings
                 )
                 break
             except Exception as e:
                 logger.info(f"【Error】: {e}")
         output_text = completion.choices[0].message.content
-        logits_list = convert_openai_logprobs(completion.choices[0].logprobs)
+        logits_list = None
+        if return_logits:
+            logits_list = convert_openai_logprobs(completion.choices[0].logprobs)
         generation_output = {"output_text": output_text,
                             #  "input_id_list": input_id_list,
                             #  "input_token_list": input_token_list,
