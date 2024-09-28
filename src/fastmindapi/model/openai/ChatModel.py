@@ -61,14 +61,15 @@ class OpenAIChatModel:
                              "logits": logits_list}
         return generation_output
 
-    def chat(self, messages: list[ChatMessage], max_completion_tokens: int = None, logprobs: bool = False, top_logprobs: int =10):
+    def chat(self, messages: list[ChatMessage], max_completion_tokens: int = None, logprobs: bool = False, top_logprobs: int =10, stop: list[str] = None):
         try:
             completion = self.client.chat.completions.create(
             model= self.model_name,
             messages=messages,
-            max_completion_tokens=max_completion_tokens,
+            max_tokens=max_completion_tokens,
             logprobs=logprobs,
             top_logprobs=top_logprobs if logprobs else None,
+            stop=stop
             )
             return completion.model_dump()
         except Exception as e:

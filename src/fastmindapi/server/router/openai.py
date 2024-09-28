@@ -7,10 +7,14 @@ class ChatMessage(BaseModel):
     role: str
     content: str
 
+
 class ChatRequest(BaseModel):
     model: str
     messages: list[ChatMessage]
     max_completion_tokens: int = None
+    logprobs: bool = False
+    top_logprobs: int = 10
+    stop: list[str] = None
 
     model_config=ConfigDict(protected_namespaces=())
 
@@ -24,7 +28,10 @@ def chat_completions(request: Request, item: ChatRequest):
     
     outputs = server.module["model"].loaded_models[item.model].chat(
         messages=item.messages, 
-        max_completion_tokens=item.max_completion_tokens
+        max_completion_tokens=item.max_completion_tokens,
+        logprobs=item.logprobs,
+        top_logprobs=item.top_logprobs,
+        stop=item.stop
     )
     return outputs
 

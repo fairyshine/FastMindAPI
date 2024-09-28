@@ -105,7 +105,7 @@ class TransformersCausalLM:
 
         return generation_output
 
-    def chat(self, messages: list[ChatMessage], max_completion_tokens: int = None, logprobs: bool = False, top_logprobs: int = 10):
+    def chat(self, messages: list[ChatMessage], max_completion_tokens: int = None, logprobs: bool = False, top_logprobs: int = 10, stop: list[str] = None):
         import torch
         import time
 
@@ -118,9 +118,10 @@ class TransformersCausalLM:
         input_text += "assistant: "
 
         inputs = self.tokenizer(input_text, return_tensors="pt").to(self.model.device)
-        
+
         generate_kwargs = {
             "max_new_tokens": max_completion_tokens,
+            "stop_strings": stop
         }
 
         with torch.no_grad():
