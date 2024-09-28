@@ -70,7 +70,6 @@ class OpenAIChatModel:
             logprobs=logprobs,
             top_logprobs=top_logprobs if logprobs else None,
             )
-            logger.info(completion.model_dump())
-            return completion.choices[0].message.content
+            return completion.model_dump()
         except Exception as e:
             return "【Error】: " + str(e)
