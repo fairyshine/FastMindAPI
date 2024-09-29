@@ -26,7 +26,7 @@ class OpenAIChatModel:
             return completion.choices[0].message.content
         except Exception as e:
             return "【Error】: " + str(e)
-    
+
     def generate(self,
                  input_text: str,
                  max_new_tokens: int = 256,

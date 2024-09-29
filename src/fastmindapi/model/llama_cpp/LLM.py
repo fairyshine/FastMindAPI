@@ -9,7 +9,7 @@ class LlamacppLLM:
     @classmethod
     def from_path(cls, model_path: str):
         from llama_cpp import Llama
-        return cls(Llama(model_path, n_gpu_layers=-1, logits_all=True))
+        return cls(Llama(model_path, n_gpu_layers=-1, logits_all=True, n_ctx=2048))
     
     def __call__(self, input_text: str, max_new_tokens: int=256):
         response = self.model(input_text, max_tokens=max_new_tokens)
