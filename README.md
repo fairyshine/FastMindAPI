@@ -4,52 +4,11 @@
 
 An easy-to-use, high-performance(?) backend for serving LLMs and other AI models, built on FastAPI.
 
-## 🚀 Quick Start
+[TOC]
 
-### Install
+## ✨ 1 Features
 
-```shell
-pip install fastmindapi
-```
-
-### Use
-
-#### Run the server 
-
-```shell
-# in Shell
-fastmindapi-server --port 8000
-```
-
-```Python
-# in Python
-import fastmindapi as FM
-
-server = FM.Server()
-server.run()
-```
-
-#### Access via client / HTTP requests
-
-```shell
-curl http://IP:PORT/docs#/
-```
-
-```python
-import fastmindapi as FM
-
-client = FM.Client(IP="x.x.x.x", PORT=xxx) # 127.0.0.1:8000 for default
-
-client.add_model_info_list(model_info_list)
-client.load_model(model_name)
-client.generate(model_name, generation_request)
-```
-
-> 🪧 **We primarily maintain the backend server; the client is provided for reference only.** The main usage is through sending HTTP requests. (We might release FM-GUI in the future.)
-
-## ✨ Features
-
-### Model: Support models with various backends
+### 1.1 Model: Support models with various backends
 
 - ✅  [Transformers](https://github.com/huggingface/transformers)
   - `TransformersCausalLM` ( `AutoModelForCausalLM`)
@@ -62,15 +21,133 @@ client.generate(model_name, generation_request)
 - [vllm](https://github.com/vllm-project/vllm)
 - ...
 
-### Modules: More than just chatting with models
+### 1.2 Modules: More than just chatting with models
 
 - Function Calling (extra tools in Python)
 - Retrieval
 - Agent
 - ...
 
-### Flexibility: Easy to Use & Highly Customizable
+### 1.3 Flexibility: Easy to Use & Highly Customizable
 
 - Load the model when coding / runtime
 - Add any APIs you want
+
+## 🚀 2 Quick Start
+
+### 2.1 Installation
+
+```shell
+pip install fastmindapi
+```
+
+### 2.2 Usage
+
+#### 2.2.1 Run the server 
+
+##### in Terminal
+
+```shell
+fastmindapi-server --port 8000
+```
+
+##### in Python
+```Python
+import fastmindapi as FM
+
+# Run the server with authentication key, port 8000 for default
+server = FM.Server(API_KEY="sk-19992001")
+server.run()
+```
+
+#### 2.2.2 Access the service
+
+##### via client
+
+```shell
+# For concise documention
+curl http://IP:PORT/docs#/
+
+# Use Case
+# 1. add model info
+curl http://127.0.0.1:8000/model/add_info \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sk-19992001" \
+  -d '{
+  "model_name": "gemma2",
+  "model_type": "TransformersCausalLM",
+  "model_path": ".../PTM/gemma-2-2b"
+}'
+
+# 2. load model
+curl http://127.0.0.1:8000/model/load/gemma2 -H "Authorization: Bearer sk-anything"
+
+# 3. run model inference
+# 3.1 Generation API
+curl http://127.0.0.1:8000/model/generate/gemma2 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sk-19992001" \
+  -d '{
+  "input_text": "Do you know something about Dota2?",
+  "max_new_tokens": 100,
+  "return_logits": true,
+  "logits_top_k": 10,
+  "stop_strings": ["\n"]
+}'
+
+# 3.2 OpenAI like API
+curl http://127.0.0.1:8000/openai/chat/completions 
+	-H "Content-Type: application/json" \
+	-H "Authorization: Bearer sk-19992001" \
+	-d '{
+  "model": "gemma2",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a test assistant."
+    },
+    {
+      "role": "user",
+      "content": "Do you know something about Dota2?"
+    }
+  ],
+  "max_completion_tokens": 100,
+  "logprobs": true,
+  "top_logprobs": 10,
+  "stop": ["\n"]
+}'
+```
+
+##### via HTTP requests
+```python
+import fastmindapi as FM
+
+# 127.0.0.1:8000 for default address
+client = FM.Client(IP="x.x.x.x", PORT=xxx, API_KEY="sk-19992001") 
+
+# 1. add model info
+model_info_list = [
+  {
+    "model_name": "gemma2",
+    "model_type": "TransformersCausalLM",
+    "model_path": ".../PTM/gemma-2-2b"
+  },
+]
+client.add_model_info_list(model_info_list)
+
+# 2. load model
+client.load_model("gemma2")
+
+# 3. run model inference
+generation_request={
+  "input_text": "Do you know something about Dota2?",
+  "max_new_tokens": 10,
+  "return_logits": True,
+  "logits_top_k": 10,
+  "stop_strings": ["."]
+}
+client.generate("gemma2", generation_request)
+```
+
+> 🪧 **We primarily maintain the backend server; the client is provided for reference only.** The main usage is through sending HTTP requests. (We might release FM-GUI in the future.)
 
