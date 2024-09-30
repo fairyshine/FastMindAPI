@@ -4,8 +4,6 @@
 
 An easy-to-use, high-performance(?) backend for serving LLMs and other AI models, built on FastAPI.
 
-[TOC]
-
 ## ✨ 1 Features
 
 ### 1.1 Model: Support models with various backends
@@ -17,8 +15,12 @@ An easy-to-use, high-performance(?) backend for serving LLMs and other AI models
 - ✅  [llama.cpp](https://github.com/abetlen/llama-cpp-python)
   - `LlamacppLM` (`Llama`)
 
+- ✅  [OpenAI](https://platform.openai.com/docs/api-reference/introduction)
+  - `OpenAIChatModel` (`/chat/completions`)
+
 - [MLC LLM](https://llm.mlc.ai)
 - [vllm](https://github.com/vllm-project/vllm)
+
 - ...
 
 ### 1.2 Modules: More than just chatting with models
@@ -41,9 +43,9 @@ An easy-to-use, high-performance(?) backend for serving LLMs and other AI models
 pip install fastmindapi
 ```
 
-### 2.2 Usage
+### 2.2 Usage (*C/S*)
 
-#### 2.2.1 Run the server 
+#### 2.2.1 Run the server (*S*)
 
 ##### in Terminal
 
@@ -60,7 +62,7 @@ server = FM.Server(API_KEY="sk-19992001")
 server.run()
 ```
 
-#### 2.2.2 Access the service
+#### 2.2.2 Access the service (*C*)
 
 ##### via client
 
@@ -80,7 +82,7 @@ curl http://127.0.0.1:8000/model/add_info \
 }'
 
 # 2. load model
-curl http://127.0.0.1:8000/model/load/gemma2 -H "Authorization: Bearer sk-anything"
+curl http://127.0.0.1:8000/model/load/gemma2 -H "Authorization: Bearer sk-19992001"
 
 # 3. run model inference
 # 3.1 Generation API
