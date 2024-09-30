@@ -13,18 +13,23 @@ SCALAR=1/(2*math.sqrt(2.0))
 class MCTSState(ABC):
     MOVES=[]
     num_moves=len(MOVES)
+    @abstractmethod
     def __init__(self):
         ...
 
+    @abstractmethod
     def next_state(self): # 🌟
         ...
 
+    @abstractmethod
     def terminal(self) -> bool: # 🌟
         ...
 
+    @abstractmethod
     def reward(self): # 🌟
         ...
 
+    @abstractmethod
     def __hash__(self): # 🌟
         ...
 
@@ -33,7 +38,8 @@ class MCTSState(ABC):
             return True
         return False
 
-    def __repr__(self):
+    @abstractmethod
+    def __repr__(self): # 🌟
         ...
 
 class MCTSNode:
@@ -198,10 +204,10 @@ if __name__=="__main__":
 
     for i in range(test_time):
         current_node=MCTSNode(TESTState())
-        current_node=MCTS.UCT_search(args.num_sims,current_node)
+        current_node=MCTS_raw.UCT_search(args.num_sims,current_node)
         while current_node.children != []:
             # print("Best Child: %s"%current_node.state)
-            current_node = MCTS.best_child(current_node, 0)
+            current_node = MCTS_raw.best_child(current_node, 0)
         print(current_node.state.moves)
         if abs(current_node.state.moves[-1]) == 2:
             score_1 += 1
@@ -214,7 +220,7 @@ if __name__=="__main__":
         current_node=MCTS_explore.UCT_search(args.num_sims,current_node)
         while current_node.children != []:
             # print("Best Child: %s"%current_node.state)
-            current_node = MCTS.best_child(current_node, 0)
+            current_node = MCTS_explore.best_child(current_node, 0)
         print(current_node.state.moves)
         if abs(current_node.state.moves[-1]) == 2:
             score_2 += 1
