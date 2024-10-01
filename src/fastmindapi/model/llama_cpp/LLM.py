@@ -1,13 +1,16 @@
-from ...server.router.openai import ChatMessage
+from typing import Optional
+
 from ...utils.transform import convert_numpy_float32_to_float
 from ... import logger
 
 class LlamacppLLM:
-    def __init__(self, model):
+    def __init__(self, 
+                 model):
         self.model = model
 
     @classmethod
-    def from_path(cls, model_path: str):
+    def from_path(cls, 
+                  model_path: str):
         from llama_cpp import Llama
         return cls(Llama(model_path, n_gpu_layers=-1, logits_all=True, n_ctx=2048))
     
@@ -19,10 +22,10 @@ class LlamacppLLM:
 
     def generate(self,
                  input_text: str,
-                 max_new_tokens: int = 256,
-                 return_logits: bool = False,
-                 logits_top_k: int = 10,
-                 stop_strings: list[str] = None):
+                 max_new_tokens: Optional[int] = None,
+                 return_logits: Optional[bool] = None,
+                 logits_top_k: Optional[int] = None,
+                 stop_strings: Optional[list[str]] = None):
         response = self.model(input_text, 
                               max_tokens=max_new_tokens,
                               logprobs = logits_top_k if return_logits else None,
@@ -69,7 +72,12 @@ class LlamacppLLM:
 
         return generation_output
 
-    def chat(self, messages: list[ChatMessage], max_completion_tokens: int = None, logprobs: bool = False, top_logprobs: int = 10, stop: list[str] = None):
+    def chat(self, 
+             messages: list[dict], 
+             max_completion_tokens: Optional[int] = None, 
+             logprobs: Optional[bool] = False, 
+             top_logprobs: Optional[int] = 10, 
+             stop: Optional[list[str]] = None):
         response = self.model.create_chat_completion(messages, 
                                                      max_tokens=max_completion_tokens, 
                                                      logprobs=logprobs, 

@@ -1,19 +1,26 @@
-from ...server.router.openai import ChatMessage
+from typing import Optional
+
 from ...utils.transform import convert_openai_logprobs
 from ... import logger
 
 class OpenAIChatModel:
-    def __init__(self, client, model_name: str, system_prompt: str = "You are a helpful assistant."):
+    def __init__(self, 
+                 client, 
+                 model_name: str, 
+                 system_prompt: Optional[str] = "You are a helpful assistant."):
         self.client = client
         self.system_prompt = system_prompt
         self.model_name = model_name
         pass
 
     @classmethod
-    def from_client(cls, client, model_name: str):
+    def from_client(cls, 
+                    client, 
+                    model_name: str):
         return cls(client, model_name)
 
-    def __call__(self, input_text: str, max_new_tokens: int = 256):
+    def __call__(self, input_text: str, 
+                 max_new_tokens: Optional[int] = None):
         try:
             completion = self.client.chat.completions.create(
             model= self.model_name,
@@ -29,10 +36,10 @@ class OpenAIChatModel:
 
     def generate(self,
                  input_text: str,
-                 max_new_tokens: int = 256,
-                 return_logits: bool = False,
-                 logits_top_k: int = 10,
-                 stop_strings: list[str] = None):
+                 max_new_tokens: Optional[int] = None,
+                 return_logits: Optional[bool] = None,
+                 logits_top_k: Optional[int] = None,
+                 stop_strings: Optional[list[str]] = None):
         while True:
             try:
                 completion = self.client.chat.completions.create(
@@ -63,7 +70,12 @@ class OpenAIChatModel:
                              "logits": logits_list}
         return generation_output
 
-    def chat(self, messages: list[ChatMessage], max_completion_tokens: int = None, logprobs: bool = False, top_logprobs: int =10, stop: list[str] = None):
+    def chat(self, 
+             messages: list[dict], 
+             max_completion_tokens: Optional[int] = None, 
+             logprobs: Optional[bool] = False, 
+             top_logprobs: Optional[int] = 10, 
+             stop: Optional[list[str]] = None):
         try:
             completion = self.client.chat.completions.create(
             model= self.model_name,

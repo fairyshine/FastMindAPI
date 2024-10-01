@@ -1,19 +1,24 @@
-from ...server.router.openai import ChatMessage
+from typing import Optional
 
 class TransformersCausalLM:
-    def __init__(self, tokenizer, model):
+    def __init__(self, 
+                 tokenizer, 
+                 model):
         self.tokenizer = tokenizer
         self.model = model
         self.model.eval()
         pass
 
     @classmethod
-    def from_path(cls, model_path: str):
+    def from_path(cls, 
+                  model_path: str):
         from transformers import AutoModelForCausalLM, AutoTokenizer
         return cls(AutoTokenizer.from_pretrained(model_path, trust_remote_code=True),
                          AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True, device_map="auto"))
 
-    def __call__(self, input_text: str, max_new_tokens: int = 256):
+    def __call__(self, 
+                 input_text: str, 
+                 max_new_tokens: int = None):
         import torch
         inputs = self.tokenizer(input_text, return_tensors="pt").to(self.model.device)
         with torch.no_grad():
@@ -26,10 +31,10 @@ class TransformersCausalLM:
     
     def generate(self,
                  input_text: str,
-                 max_new_tokens: int = 256,
-                 return_logits: bool = False,
-                 logits_top_k: int = 10,
-                 stop_strings: list[str] = None):
+                 max_new_tokens: Optional[int] = None,
+                 return_logits: Optional[bool] = None,
+                 logits_top_k: Optional[int] = None,
+                 stop_strings: Optional[list[str]] = None):
         import torch
         import torch.nn.functional as F
 
@@ -105,7 +110,12 @@ class TransformersCausalLM:
 
         return generation_output
 
-    def chat(self, messages: list[ChatMessage], max_completion_tokens: int = None, logprobs: bool = False, top_logprobs: int = 10, stop: list[str] = None):
+    def chat(self, 
+             messages: list[dict], 
+             max_completion_tokens: Optional[int] = None, 
+             logprobs: Optional[bool] = None, 
+             top_logprobs: Optional[int] = None, 
+             stop: Optional[list[str]] = None):
         import torch
         import time
 

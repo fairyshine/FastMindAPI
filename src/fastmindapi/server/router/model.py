@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, ConfigDict
 from fastapi import APIRouter, Request
 
@@ -6,33 +7,23 @@ PREFIX = "/model"
 class BasicModel(BaseModel):
     model_name: str
     model_type: str
-    model_path: str = None
-    model_foundation: str = None # for Peft Model
+    model_path: Optional[str] = None
+    model_foundation: Optional[str] = None # for Peft Model
+
     model_config = ConfigDict(protected_namespaces=())
 
 class GenerationRequest(BaseModel):
     input_text: str
-    max_new_tokens: int = None
-    return_logits: bool = False
-    logits_top_k: int = 10
-    stop_strings: list[str] = None
+    max_new_tokens: Optional[int] = None
+    return_logits: Optional[bool] = None
+    logits_top_k: Optional[int] = None
+    stop_strings: Optional[list[str]] = None
 
     model_config=ConfigDict(protected_namespaces=())
 
 class GenerationOutput(BaseModel):
     output_text: str
     logits: list
-
-class ChatMessage(BaseModel):
-    role: str
-    content: str
-
-class ChatRequest(BaseModel):
-    messages: list[ChatMessage]
-    max_new_tokens: int = 256
-    logprobs: bool = False
-    top_logprobs: int = 10
-    model_config=ConfigDict(protected_namespaces=())
 
 def add_model_info(request: Request, item: BasicModel):
     server = request.app.state.server
@@ -71,8 +62,7 @@ def unload_model(request: Request, model_name: str):
 
 def simple_generate(request: Request, model_name: str, item: GenerationRequest):
     server = request.app.state.server
-    output_text = server.module["model"].loaded_models[model_name](input_text = item.input_text, 
-                                                                        max_new_tokens=item.max_new_tokens if item.max_new_tokens is not None else None)
+    output_text = server.module["model"].loaded_models[model_name](**item.model_dump(exclude_none=True))
     return output_text
 
 def generate(request: Request, model_name: str, item: GenerationRequest):
@@ -81,7 +71,7 @@ def generate(request: Request, model_name: str, item: GenerationRequest):
         assert model_name in server.module["model"].loaded_models
     except AssertionError:
         return f"【Error】: {model_name} is not loaded."
-    outputs = server.module["model"].loaded_models[model_name].generate(**item.model_dump())
+    outputs = server.module["model"].loaded_models[model_name].generate(**item.model_dump(exclude_none=True))
     return outputs
 
 def get_model_router():

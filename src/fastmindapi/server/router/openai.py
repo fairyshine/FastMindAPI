@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, ConfigDict
 from fastapi import APIRouter, Request
 
@@ -7,14 +9,13 @@ class ChatMessage(BaseModel):
     role: str
     content: str
 
-
 class ChatRequest(BaseModel):
     model: str
     messages: list[ChatMessage]
-    max_completion_tokens: int = None
-    logprobs: bool = False
-    top_logprobs: int = 10
-    stop: list[str] = None
+    max_completion_tokens: Optional[int] = None
+    logprobs: Optional[bool] = None
+    top_logprobs: Optional[int] = None
+    stop: Optional[list[str]] = None
 
     model_config=ConfigDict(protected_namespaces=())
 
@@ -26,13 +27,9 @@ def chat_completions(request: Request, item: ChatRequest):
     except AssertionError:
         return f"【Error】: {item.model} is not loaded."
     
-    outputs = server.module["model"].loaded_models[item.model].chat(
-        messages=item.messages, 
-        max_completion_tokens=item.max_completion_tokens,
-        logprobs=item.logprobs,
-        top_logprobs=item.top_logprobs,
-        stop=item.stop
-    )
+    chat_params = item.model_dump(exclude_none=True)
+    del chat_params["model"]
+    outputs = server.module["model"].loaded_models[item.model].chat(**chat_params)
     return outputs
 
 def get_openai_router():
