@@ -1,6 +1,6 @@
 from typing import Optional
 
-from ...utils.transform import convert_numpy_float32_to_float
+from ...utils.transform import convert_numpy_float32_to_float, clean_dict_null_value
 from ... import logger
 
 class LlamacppLLM:
@@ -25,11 +25,19 @@ class LlamacppLLM:
                  max_new_tokens: Optional[int] = None,
                  return_logits: Optional[bool] = None,
                  logits_top_k: Optional[int] = None,
-                 stop_strings: Optional[list[str]] = None):
+                 stop_strings: Optional[list[str]] = None,
+                 config: Optional[dict] = None):
+        optional_kwargs = {
+            "max_tokens": max_new_tokens,
+            "logprobs": logits_top_k if return_logits else None,
+            "stop": stop_strings,
+            "temperature": (config["temperature"] if "temperature" in config else None) if config else None,
+            "top_p": (config["top_p"] if "top_p" in config else None) if config else None,
+            "top_k": (config["top_k"] if "top_k" in config else None) if config else None,
+            "repeat_penalty": (config["repetition_penalty"] if "repetition_penalty" in config else None) if config else None,
+        }
         response = self.model(input_text, 
-                              max_tokens=max_new_tokens,
-                              logprobs = logits_top_k if return_logits else None,
-                              stop = stop_strings,
+                              **clean_dict_null_value(optional_kwargs),
                               echo = True,
                               )
         full_text = response["choices"][0]["text"]
@@ -78,9 +86,12 @@ class LlamacppLLM:
              logprobs: Optional[bool] = False, 
              top_logprobs: Optional[int] = 10, 
              stop: Optional[list[str]] = None):
+        optional_kwargs = {
+            "max_tokens": max_completion_tokens,
+            "logprobs": logprobs,
+            "top_logprobs": top_logprobs if logprobs else None,
+            "stop": stop
+        }
         response = self.model.create_chat_completion(messages, 
-                                                     max_tokens=max_completion_tokens, 
-                                                     logprobs=logprobs, 
-                                                     top_logprobs=top_logprobs if logprobs else None,
-                                                     stop=stop)
+                                                     **clean_dict_null_value(optional_kwargs))
         return response

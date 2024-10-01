@@ -1,6 +1,6 @@
 from typing import Optional
 
-from ...utils.transform import convert_openai_logprobs
+from ...utils.transform import convert_openai_logprobs, clean_dict_null_value
 from ... import logger
 
 class OpenAIChatModel:
@@ -28,7 +28,7 @@ class OpenAIChatModel:
                 {"role": "system", "content": self.system_prompt},
                 {"role": "user", "content": input_text}
             ],
-            max_completion_tokens=max_new_tokens
+            max_tokens=max_new_tokens
             )
             return completion.choices[0].message.content
         except Exception as e:
@@ -39,7 +39,16 @@ class OpenAIChatModel:
                  max_new_tokens: Optional[int] = None,
                  return_logits: Optional[bool] = None,
                  logits_top_k: Optional[int] = None,
-                 stop_strings: Optional[list[str]] = None):
+                 stop_strings: Optional[list[str]] = None,
+                 config: Optional[dict] = None):
+        optional_kwargs = {
+            "max_tokens": max_new_tokens,
+            "logprobs": return_logits,
+            "top_logprobs": logits_top_k if return_logits else None,
+            "stop": stop_strings,
+            "temperature": (config["temperature"] if "temperature" in config else None) if config else None,
+            "top_p": (config["top_p"] if "top_p" in config else None) if config else None,
+        }
         while True:
             try:
                 completion = self.client.chat.completions.create(
@@ -48,10 +57,7 @@ class OpenAIChatModel:
                     {"role": "system", "content": self.system_prompt},
                     {"role": "user", "content": input_text}
                 ],
-                max_completion_tokens=max_new_tokens,
-                logprobs=return_logits,
-                top_logprobs=logits_top_k if return_logits else None,
-                stop=stop_strings
+                **clean_dict_null_value(optional_kwargs)
                 )
                 break
             except Exception as e:
@@ -73,17 +79,18 @@ class OpenAIChatModel:
     def chat(self, 
              messages: list[dict], 
              max_completion_tokens: Optional[int] = None, 
-             logprobs: Optional[bool] = False, 
-             top_logprobs: Optional[int] = 10, 
+             logprobs: Optional[bool] = None, # Defaults to false
+             top_logprobs: Optional[int] = None, 
              stop: Optional[list[str]] = None):
+        optional_kwargs = {"max_tokens": max_completion_tokens,
+                           "logprobs": logprobs,
+                           "top_logprobs": top_logprobs if logprobs else None,
+                           "stop": stop}
         try:
             completion = self.client.chat.completions.create(
             model= self.model_name,
             messages=messages,
-            max_tokens=max_completion_tokens,
-            logprobs=logprobs,
-            top_logprobs=top_logprobs if logprobs else None,
-            stop=stop
+            **clean_dict_null_value(optional_kwargs)
             )
             return completion.model_dump()
         except Exception as e:

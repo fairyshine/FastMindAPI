@@ -10,10 +10,11 @@ GenerationConfig
 
 https://github.com/huggingface/transformers/blob/main/src/transformers/generation/configuration_utils.py#L94
 
-
 # Llama.cpp
 
+llama.\_\_call\_\_
 
+https://github.com/abetlen/llama-cpp-python/blob/main/llama_cpp/llama.py#L1836
 
 # OpenAI
 

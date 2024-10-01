@@ -11,6 +11,9 @@ def convert_numpy_float32_to_float(d):
     else:
         return d
     
+def clean_dict_null_value(d):
+    return { k:d[k] for k in d if d[k] }
+    
 def convert_openai_logprobs(logprobs):
     logprobs = logprobs.model_dump()
     logits_list = []

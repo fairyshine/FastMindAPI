@@ -12,12 +12,20 @@ class BasicModel(BaseModel):
 
     model_config = ConfigDict(protected_namespaces=())
 
+class GenerationConfig(BaseModel):
+    do_sample: Optional[bool] = None
+    temperature: Optional[float] = None
+    top_k: Optional[int] = None
+    top_p: Optional[float] = None
+    repetition_penalty: Optional[float] = None
+
 class GenerationRequest(BaseModel):
     input_text: str
     max_new_tokens: Optional[int] = None
     return_logits: Optional[bool] = None
     logits_top_k: Optional[int] = None
     stop_strings: Optional[list[str]] = None
+    config: Optional[GenerationConfig] = None
 
     model_config=ConfigDict(protected_namespaces=())
 

@@ -1,5 +1,7 @@
 from typing import Optional
 
+from ...utils.transform import clean_dict_null_value
+
 class TransformersCausalLM:
     def __init__(self, 
                  tokenizer, 
@@ -34,7 +36,8 @@ class TransformersCausalLM:
                  max_new_tokens: Optional[int] = None,
                  return_logits: Optional[bool] = None,
                  logits_top_k: Optional[int] = None,
-                 stop_strings: Optional[list[str]] = None):
+                 stop_strings: Optional[list[str]] = None,
+                 config: Optional[dict] = None):
         import torch
         import torch.nn.functional as F
 
@@ -43,10 +46,12 @@ class TransformersCausalLM:
         input_token_list = [self.tokenizer.decode([token_id]) for token_id in input_id_list]
 
         with torch.no_grad():
-            outputs = self.model.generate(**inputs, 
-                                          max_new_tokens=max_new_tokens,
-                                          stop_strings=stop_strings,
-                                          tokenizer=self.tokenizer)
+            generate_kwargs = {"generation_config": clean_dict_null_value(config) if config else None, 
+                                "max_new_tokens": max_new_tokens, 
+                                "stop_strings": stop_strings}
+            outputs = self.model.generate(inputs.input_ids,
+                                            **clean_dict_null_value(generate_kwargs),
+                                            tokenizer=self.tokenizer)
         full_id_list = outputs[0].tolist()
         full_token_list = [self.tokenizer.decode([token_id]) for token_id in full_id_list]
         full_text = self.tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
@@ -135,7 +140,8 @@ class TransformersCausalLM:
         }
 
         with torch.no_grad():
-            outputs = self.model.generate(**inputs, **generate_kwargs)
+            outputs = self.model.generate(**inputs, 
+                                          **clean_dict_null_value(generate_kwargs))
         
         full_text = self.tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
         re_inputs = self.tokenizer.batch_decode(inputs.input_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
