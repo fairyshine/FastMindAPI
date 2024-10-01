@@ -37,7 +37,7 @@ class Server:
         if credentials.credentials != self.api_key:
             self.logger.warning(f"Invalid API key.: {credentials.credentials}")  # 记录无效的API密钥
             raise HTTPException(status_code=403, detail="Invalid API key.")
-        self.logger.info("API Key verified successfully.")  # 记录成功的验证
+        # self.logger.info("API Key verified successfully.")  # 记录成功的验证
 
     def run(self):
         match self.deploy_mode:

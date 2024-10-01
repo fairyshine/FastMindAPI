@@ -160,6 +160,7 @@ class MCTS_explore(MCTS_raw):
         return node
 
 if __name__=="__main__":
+    # Learn from https://github.com/haroldsultan/MCTS.git
     class TESTState(MCTSState):
         NUM_TURNS = 10	
         GOAL = 0
@@ -228,4 +229,4 @@ if __name__=="__main__":
     print("Score 1: ", score_1)
     print("Score 2: ", score_2)
     
-    # Command: python src/fastmindapi/algo/tree/mcts.py --num_sims 10000 --levels 8 
+    # Command: python src/fastmindapi/algo/tree/mcts.py --num_sims 30000 --levels 8 

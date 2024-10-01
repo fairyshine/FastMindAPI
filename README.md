@@ -50,7 +50,7 @@ pip install fastmindapi
 ##### in Terminal
 
 ```shell
-fastmindapi-server --port 8000
+fastmindapi-server --port 8000 --apikey sk-19992001
 ```
 
 ##### in Python
