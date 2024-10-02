@@ -7,6 +7,7 @@ class LlamacppLLM:
     def __init__(self, 
                  model):
         self.model = model
+        self.model_name = None
 
     @classmethod
     def from_path(cls, 

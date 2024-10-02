@@ -6,7 +6,7 @@ class PeftCausalLM(TransformersCausalLM):
         self.raw_model = base_model.model
         self.tokenizer = base_model.tokenizer
         self.model = peft_model
-        pass
+        self.model_name = None
 
     @classmethod
     def from_path(cls, base_model: TransformersCausalLM, 

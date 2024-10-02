@@ -11,7 +11,6 @@ class OpenAIChatModel:
         self.client = client
         self.system_prompt = system_prompt
         self.model_name = model_name
-        pass
 
     @classmethod
     def from_client(cls, 

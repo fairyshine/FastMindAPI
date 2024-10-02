@@ -18,11 +18,11 @@ https://github.com/abetlen/llama-cpp-python/blob/main/llama_cpp/llama.py#L1836
 
 # OpenAI
 
-
-
 https://platform.openai.com/docs/api-reference/chat/create
 
+# vLLM
 
+https://github.com/vllm-project/vllm/blob/main/vllm/entrypoints/llm.py#L312
 
 # Model
 

@@ -8,8 +8,10 @@ class TransformersCausalLM:
                  model):
         self.tokenizer = tokenizer
         self.model = model
+        self.model_name = None
+
         self.model.eval()
-        pass
+
 
     @classmethod
     def from_path(cls, 

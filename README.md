@@ -75,7 +75,7 @@ curl http://127.0.0.1:8000/model/add_info \
   -H "Authorization: Bearer sk-19992001" \
   -d '{
   "model_name": "gemma2",
-  "model_type": "TransformersCausalLM",
+  "model_type": "Transformers_CausalLM",
   "model_path": ".../PTM/gemma-2-2b"
 }'
 
@@ -129,7 +129,7 @@ client = FM.Client(IP="x.x.x.x", PORT=xxx, API_KEY="sk-19992001")
 model_info_list = [
   {
     "model_name": "gemma2",
-    "model_type": "TransformersCausalLM",
+    "model_type": "Transformers_CausalLM",
     "model_path": ".../PTM/gemma-2-2b"
   },
 ]
