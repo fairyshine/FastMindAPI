@@ -9,18 +9,16 @@ An easy-to-use, high-performance(?) backend for serving LLMs and other AI models
 ### 1.1 Model: Support models with various backends
 
 - ✅  [Transformers](https://github.com/huggingface/transformers)
-  - `TransformersCausalLM` ( `AutoModelForCausalLM`)
-  - `PeftCausalLM` ( `PeftModelForCausalLM` )
-  
+  - `Transformers_CausalLM` ( `AutoModelForCausalLM`)
+  - `Peft_CausalLM` ( `PeftModelForCausalLM` )
 - ✅  [llama.cpp](https://github.com/abetlen/llama-cpp-python)
-  - `LlamacppLM` (`Llama`)
-
+  - `Llamacpp_LLM` (`Llama`)
 - ✅  [OpenAI](https://platform.openai.com/docs/api-reference/introduction)
-  - `OpenAIChatModel` (`/chat/completions`)
+  - `OpenAI_ChatModel` (`/chat/completions`)
+- ✅  [vllm](https://github.com/vllm-project/vllm)
+  - `vLLM_LLM`(`LLM`)
 
 - [MLC LLM](https://llm.mlc.ai)
-- [vllm](https://github.com/vllm-project/vllm)
-
 - ...
 
 ### 1.2 Modules: More than just chatting with models

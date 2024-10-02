@@ -2,6 +2,7 @@ from .transformers.CausalLM import TransformersCausalLM
 from .transformers.PeftModel import PeftCausalLM
 from .llama_cpp.LLM import LlamacppLLM
 from .openai.ChatModel import OpenAIChatModel
+from .vllm.LLM import vLLMLLM
 
 class ModelModule:
     def __init__(self):
@@ -22,17 +23,23 @@ class ModelModule:
         
         # 匹配模型类型
         match model_type:
-            case "TransformersCausalLM":
+            case "Transformers_CausalLM":
                 self.loaded_models[model_name] = TransformersCausalLM.from_path(model_path)
-            case "PeftCausalLM":
+                self.loaded_models[model_name].model_name = model_name
+            case "Peft_CausalLM":
                 model_foundation = self.available_models[model_name]["model_foundation"]
                 if model_foundation not in self.loaded_models:
                     self.loaded_models[model_foundation] = TransformersCausalLM.from_path(self.available_models[model_foundation]["model_path"])
                 base_model = self.loaded_models[model_foundation]
                 assert isinstance(base_model, TransformersCausalLM)
                 self.loaded_models[model_name] = PeftCausalLM.from_path(base_model, model_path)
-            case "LlamacppLLM":
+                self.loaded_models[model_name].model_name = model_name
+            case "Llamacpp_LLM":
                 self.loaded_models[model_name] = LlamacppLLM.from_path(model_path)
-            case "OpenAIChatModel":
+                self.loaded_models[model_name].model_name = model_name 
+            case "OpenAI_ChatModel":
                 self.loaded_models[model_name] = OpenAIChatModel.from_client(self.client["OpenAI"], model_name)
-
+                self.loaded_models[model_name].model_name = model_name
+            case "vLLM_LLM":
+                self.loaded_models[model_name] = vLLMLLM.from_path(model_path)
+                self.loaded_models[model_name].model_name = model_name
