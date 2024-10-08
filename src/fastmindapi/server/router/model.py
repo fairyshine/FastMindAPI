@@ -29,9 +29,12 @@ class GenerationRequest(BaseModel):
 
     model_config=ConfigDict(protected_namespaces=())
 
-class GenerationOutput(BaseModel):
-    output_text: str
-    logits: list
+class EncodeRequest(BaseModel):
+    input_text: str
+
+class DecodeRequest(BaseModel):
+    input_ids: list[int]
+    skip_special_tokens: Optional[bool] = None
 
 def add_model_info(request: Request, item: BasicModel):
     server = request.app.state.server
@@ -82,6 +85,14 @@ def generate(request: Request, model_name: str, item: GenerationRequest):
     outputs = server.module["model"].loaded_models[model_name].generate(**item.model_dump(exclude_none=True))
     return outputs
 
+def tokenize(request: Request, model_name: str, item: EncodeRequest):
+    server = request.app.state.server
+    return server.module["model"].loaded_models[model_name].tokenize(**item.model_dump(exclude_none=True))
+
+def detokenize(request: Request, model_name: str, item: DecodeRequest):
+    server = request.app.state.server
+    return server.module["model"].loaded_models[model_name].detokenize(**item.model_dump(exclude_none=True))
+
 def get_model_router():
     router = APIRouter(prefix=PREFIX)
 
@@ -90,4 +101,6 @@ def get_model_router():
     router.add_api_route("/unload/{model_name}", unload_model, methods=["GET"])
     router.add_api_route("/call/{model_name}", simple_generate, methods=["POST"])
     router.add_api_route("/generate/{model_name}", generate, methods=["POST"])
+    router.add_api_route("/tokenize/{model_name}", tokenize, methods=["POST"])
+    router.add_api_route("/detokenize/{model_name}", detokenize, methods=["POST"])
     return router

@@ -17,7 +17,7 @@ class vLLMLLM:
 
     def __call__(self, 
                  input_text: str, 
-                 max_new_tokens: int = None):
+                 max_new_tokens: Optional[int] = None):
         from vllm import SamplingParams
         outputs = self.model.generate([input_text], SamplingParams(**({ "max_tokens": max_new_tokens } if max_new_tokens else {})))
         output_text = outputs[0].outputs[0].text
@@ -27,7 +27,7 @@ class vLLMLLM:
                  input_text: str,
                  max_new_tokens: Optional[int] = None,
                  return_logits: Optional[bool] = None,
-                 logits_top_k: Optional[int] = None,
+                 logits_top_k: Optional[int] = 10,
                  stop_strings: Optional[list[str]] = None,
                  config: Optional[dict] = None):
         from vllm import SamplingParams
@@ -103,7 +103,7 @@ class vLLMLLM:
              messages: list[dict], 
              max_completion_tokens: Optional[int] = None, 
              logprobs: Optional[bool] = None, 
-             top_logprobs: Optional[int] = None, 
+             top_logprobs: Optional[int] = 10, 
              stop: Optional[list[str]] = None):
         import time
         from vllm import SamplingParams
@@ -160,3 +160,14 @@ class vLLMLLM:
             }
         }
         return response
+    
+    def tokenize(self, 
+                 input_text: str) -> list[int]:
+        return self.tokenizer.encode(input_text)
+    
+    def detokenize(self, 
+                   input_ids: list[int],
+                   skip_special_tokens: Optional[bool] = True) -> str:
+        return self.tokenizer.decode(input_ids, 
+                                     skip_special_tokens=skip_special_tokens,
+                                     clean_up_tokenization_spaces=False)

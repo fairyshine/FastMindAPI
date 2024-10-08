@@ -26,7 +26,7 @@ class TransformersCausalLM:
         import torch
         inputs = self.tokenizer(input_text, return_tensors="pt").to(self.model.device)
         with torch.no_grad():
-            outputs = self.model.generate(**inputs, max_new_tokens=max_new_tokens)
+            outputs = self.model.generate(**inputs, **clean_dict_null_value({"max_new_tokens": max_new_tokens}))
         full_text = self.tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
         # output_text = full_text[len(input_text):]
         re_inputs = self.tokenizer.batch_decode(inputs.input_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
@@ -37,7 +37,7 @@ class TransformersCausalLM:
                  input_text: str,
                  max_new_tokens: Optional[int] = None,
                  return_logits: Optional[bool] = None,
-                 logits_top_k: Optional[int] = None,
+                 logits_top_k: Optional[int] = 10,
                  stop_strings: Optional[list[str]] = None,
                  config: Optional[dict] = None):
         import torch
@@ -121,7 +121,7 @@ class TransformersCausalLM:
              messages: list[dict], 
              max_completion_tokens: Optional[int] = None, 
              logprobs: Optional[bool] = None, 
-             top_logprobs: Optional[int] = None, 
+             top_logprobs: Optional[int] = 10, 
              stop: Optional[list[str]] = None):
         import torch
         import time
@@ -129,8 +129,8 @@ class TransformersCausalLM:
         # 将消息列表转换为输入文本
         input_text = ""
         for message in messages:
-            role = message.role
-            content = message.content
+            role = message["role"]
+            content = message["content"]
             input_text += f"{role}: {content}\n"
         input_text += "assistant: "
 
@@ -175,3 +175,14 @@ class TransformersCausalLM:
             }
         }
         return response
+    
+    def tokenize(self, 
+                 input_text: str) -> list[int]:
+        return self.tokenizer.encode(input_text)
+    
+    def detokenize(self, 
+                   input_ids: list[int],
+                   skip_special_tokens: Optional[bool] = True) -> str:
+        return self.tokenizer.decode(input_ids, 
+                                     skip_special_tokens=skip_special_tokens,
+                                     clean_up_tokenization_spaces=False)
