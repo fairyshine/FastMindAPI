@@ -27,7 +27,7 @@ class OpenAIChatModel:
                 {"role": "system", "content": self.system_prompt},
                 {"role": "user", "content": input_text}
             ],
-            max_tokens=max_new_tokens
+            **clean_dict_null_value({"max_new_tokens": max_new_tokens})
             )
             return completion.choices[0].message.content
         except Exception as e:
@@ -37,7 +37,7 @@ class OpenAIChatModel:
                  input_text: str,
                  max_new_tokens: Optional[int] = None,
                  return_logits: Optional[bool] = None,
-                 logits_top_k: Optional[int] = None,
+                 logits_top_k: Optional[int] = 10,
                  stop_strings: Optional[list[str]] = None,
                  config: Optional[dict] = None):
         optional_kwargs = {
@@ -79,7 +79,7 @@ class OpenAIChatModel:
              messages: list[dict], 
              max_completion_tokens: Optional[int] = None, 
              logprobs: Optional[bool] = None, # Defaults to false
-             top_logprobs: Optional[int] = None, 
+             top_logprobs: Optional[int] = 10, 
              stop: Optional[list[str]] = None):
         optional_kwargs = {"max_tokens": max_completion_tokens,
                            "logprobs": logprobs,

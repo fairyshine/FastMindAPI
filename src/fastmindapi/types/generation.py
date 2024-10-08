@@ -8,7 +8,3 @@ class GenerationRequest(BaseModel):
     stop_strings: list[str] = None
 
     model_config=ConfigDict(protected_namespaces=())
-
-class GenerationOutput(BaseModel):
-    output_text: str
-    logits: list

@@ -15,8 +15,10 @@ class LlamacppLLM:
         from llama_cpp import Llama
         return cls(Llama(model_path, n_gpu_layers=-1, logits_all=True, n_ctx=2048))
     
-    def __call__(self, input_text: str, max_new_tokens: int=256):
-        response = self.model(input_text, max_tokens=max_new_tokens)
+    def __call__(self, 
+                 input_text: str, 
+                 max_new_tokens: Optional[int] = None):
+        response = self.model(input_text, **clean_dict_null_value({"max_new_tokens": max_new_tokens}))
         output_text = response["choices"][0]["text"]
         return output_text
         # {"id":"cmpl-bab2b133-cf08-43aa-8ea0-7c4b109b9cf4","object":"text_completion","created":1726721257,"model":"/Users/wumengsong/Resource/gguf/Meta-Llama-3.1-8B-Instruct-Q8_0.gguf","choices":[{"text":" I'm a beginner and I'ts my first time playing this game. I","index":0,"logprobs":null,"finish_reason":"length"}],"usage":{"prompt_tokens":9,"completion_tokens":16,"total_tokens":25}}
@@ -25,7 +27,7 @@ class LlamacppLLM:
                  input_text: str,
                  max_new_tokens: Optional[int] = None,
                  return_logits: Optional[bool] = None,
-                 logits_top_k: Optional[int] = None,
+                 logits_top_k: Optional[int] = 10,
                  stop_strings: Optional[list[str]] = None,
                  config: Optional[dict] = None):
         optional_kwargs = {
