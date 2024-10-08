@@ -47,13 +47,16 @@ class TransformersCausalLM:
         input_id_list = inputs.input_ids[0].tolist()
         input_token_list = [self.tokenizer.decode([token_id]) for token_id in input_id_list]
 
+        generate_kwargs = {
+            "do_sample": True,
+            "max_new_tokens": max_new_tokens, 
+            "stop_strings": stop_strings
+        }
+        for k, v in clean_dict_null_value(config).items():
+            generate_kwargs[k] = v
+
         with torch.no_grad():
-            generate_kwargs = {"generation_config": clean_dict_null_value(config) if config else None, 
-                                "max_new_tokens": max_new_tokens, 
-                                "stop_strings": stop_strings}
-            outputs = self.model.generate(inputs.input_ids,
-                                            **clean_dict_null_value(generate_kwargs),
-                                            tokenizer=self.tokenizer)
+            outputs = self.model.generate(inputs.input_ids, **clean_dict_null_value(generate_kwargs), tokenizer=self.tokenizer)
         full_id_list = outputs[0].tolist()
         full_token_list = [self.tokenizer.decode([token_id]) for token_id in full_id_list]
         full_text = self.tokenizer.batch_decode(outputs, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
