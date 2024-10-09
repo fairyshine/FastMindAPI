@@ -1,7 +1,6 @@
 from typing import Optional
 
-from ... import logger
-from ... import config as fmconfig
+from ..utils.io import generation_logger
 from ...utils.transform import clean_dict_null_value
 
 class TransformersCausalLM:
@@ -11,7 +10,7 @@ class TransformersCausalLM:
         self.tokenizer = tokenizer
         self.model = model
         self.model_name = None
-
+        self.backend = "Transformers"
         self.model.eval()
 
 
@@ -35,6 +34,7 @@ class TransformersCausalLM:
         output_text = full_text[len(re_inputs):]
         return output_text
     
+    @generation_logger
     def generate(self,
                  input_text: str,
                  max_new_tokens: Optional[int] = None,
@@ -111,10 +111,6 @@ class TransformersCausalLM:
                     logits["probs"].append(round(prob,4))
                 logits_list.append(logits)
 
-        if fmconfig.log_model_io:
-            logger.info("【model_io】Transformers:"+self.model_name+".generate()")
-            logger.info("- input_text: "+input_text)
-            logger.info("- output_text: "+output_text)
         generation_output = {"output_text": output_text,
                              "input_id_list": input_id_list,
                              "input_token_list": input_token_list,

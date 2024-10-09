@@ -1,14 +1,14 @@
 from typing import Optional
 
+from ..utils.io import generation_logger
 from ...utils.transform import convert_numpy_float32_to_float, clean_dict_null_value
-from ... import logger
-from ... import config as fmconfig
 
 class LlamacppLLM:
     def __init__(self, 
                  model):
         self.model = model
         self.model_name = None
+        self.backend = "Llamacpp"
 
     @classmethod
     def from_path(cls, 
@@ -24,6 +24,7 @@ class LlamacppLLM:
         return output_text
         # {"id":"cmpl-bab2b133-cf08-43aa-8ea0-7c4b109b9cf4","object":"text_completion","created":1726721257,"model":"/Users/wumengsong/Resource/gguf/Meta-Llama-3.1-8B-Instruct-Q8_0.gguf","choices":[{"text":" I'm a beginner and I'ts my first time playing this game. I","index":0,"logprobs":null,"finish_reason":"length"}],"usage":{"prompt_tokens":9,"completion_tokens":16,"total_tokens":25}}
 
+    @generation_logger
     def generate(self,
                  input_text: str,
                  max_new_tokens: Optional[int] = None,
@@ -73,10 +74,6 @@ class LlamacppLLM:
                     logits["probs"].append(round(math.exp(logprobs["top_logprobs"][i][token]),4))
                 logits_list.append(logits)
 
-        if fmconfig.log_model_io:
-            logger.info("【model_io】Llamacpp:"+self.model_name+".generate()")
-            logger.info("- input_text: "+input_text)
-            logger.info("- output_text: "+output_text)
         generation_output = {"output_text": output_text,
                              "input_id_list": input_id_list,
                              "input_token_list": input_token_list,

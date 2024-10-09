@@ -1,7 +1,6 @@
 from typing import Optional
 
-from ... import logger
-from ... import config as fmconfig
+from ..utils.io import generation_logger
 from ...utils.transform import clean_dict_null_value
 
 class vLLMLLM:
@@ -10,6 +9,7 @@ class vLLMLLM:
         self.model = model
         self.tokenizer = self.model.get_tokenizer()
         self.model_name = None
+        self.backend = "vLLM"
 
     @classmethod
     def from_path(cls, 
@@ -25,6 +25,7 @@ class vLLMLLM:
         output_text = outputs[0].outputs[0].text
         return output_text
 
+    @generation_logger
     def generate(self,
                  input_text: str,
                  max_new_tokens: Optional[int] = None,
@@ -89,10 +90,6 @@ class vLLMLLM:
                         logits["logprobs"][rank-1] = round(logprob,4) if logprob != float("-inf") else None
                 logits_list.append(logits)
 
-        if fmconfig.log_model_io:
-            logger.info("【model_io】vLLM:"+self.model_name+".generate()")
-            logger.info("- input_text: "+input_text)
-            logger.info("- output_text: "+output_text)
         generation_output = {"output_text": output_text,
                              "input_id_list": input_id_list,
                              "input_token_list": input_token_list,
