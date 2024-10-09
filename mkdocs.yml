@@ -55,9 +55,7 @@ markdown_extensions:
   - pymdownx.superfences
 
 nav:
-  - Home:
-    - index.md
-    - ABOUT: HOME/ABOUT.md
+  - Home: index.md
   - Quick Start:
     - Installation: Quick_Start/installation.md
     - User Guide: Quick_Start/user_guide.md
@@ -65,3 +63,4 @@ nav:
   - Documentation: Documentation/API.md
   - Development:
     - Build Custom Function Library: Development/FunctionLibrary.md
+  - ABOUT: about.md
