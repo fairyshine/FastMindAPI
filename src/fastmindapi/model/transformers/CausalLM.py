@@ -1,5 +1,7 @@
 from typing import Optional
 
+from ... import logger
+from ... import config as fmconfig
 from ...utils.transform import clean_dict_null_value
 
 class TransformersCausalLM:
@@ -109,6 +111,10 @@ class TransformersCausalLM:
                     logits["probs"].append(round(prob,4))
                 logits_list.append(logits)
 
+        if fmconfig.log_model_io:
+            logger.info("【model_io】Transformers:"+self.model_name+".generate()")
+            logger.info("- input_text: "+input_text)
+            logger.info("- output_text: "+output_text)
         generation_output = {"output_text": output_text,
                              "input_id_list": input_id_list,
                              "input_token_list": input_token_list,
@@ -117,7 +123,6 @@ class TransformersCausalLM:
                              "full_token_list": full_token_list,
                              "full_text": full_text,
                              "logits": logits_list}
-
         return generation_output
 
     def chat(self, 

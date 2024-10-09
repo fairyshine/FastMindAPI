@@ -14,10 +14,10 @@ class BasicModel(BaseModel):
 
 class GenerationConfig(BaseModel):
     do_sample: Optional[bool] = None
-    temperature: Optional[float] = None
+    temperature: Optional[float] = float('nan')
     top_k: Optional[int] = None
-    top_p: Optional[float] = None
-    repetition_penalty: Optional[float] = None
+    top_p: Optional[float] = float('nan')
+    repetition_penalty: Optional[float] = float('nan')
 
 class GenerationRequest(BaseModel):
     input_text: str
@@ -82,6 +82,11 @@ def generate(request: Request, model_name: str, item: GenerationRequest):
         assert model_name in server.module["model"].loaded_models
     except AssertionError:
         return f"【Error】: {model_name} is not loaded."
+
+    # input = item.model_dump(exclude_none=True)
+    # if item.config:
+    #     config = item.config.model_dump(exclude_none=True)
+    #     input["config"] = config
     outputs = server.module["model"].loaded_models[model_name].generate(**item.model_dump(exclude_none=True))
     return outputs
 

@@ -1,5 +1,7 @@
 from typing import Optional
 
+from ... import logger
+from ... import config as fmconfig
 from ...utils.transform import clean_dict_null_value
 
 class vLLMLLM:
@@ -41,7 +43,7 @@ class vLLMLLM:
             "top_p": (config["top_p"] if "top_p" in config else None) if config else None,
             "top_k": (config["top_k"] if "top_k" in config else None) if config else None,
         }
-        outputs = self.model.generate([input_text], SamplingParams(**clean_dict_null_value(sampling_kwargs)))
+        outputs = self.model.generate(prompts=[input_text], sampling_params=SamplingParams(**clean_dict_null_value(sampling_kwargs)))
 
         output_text = outputs[0].outputs[0].text
         full_text = input_text + output_text
@@ -84,9 +86,13 @@ class vLLMLLM:
                         logits["pred_id"][rank-1] = chosen_token_id
                         logits["pred_token"][rank-1] = decoded_token
                         logits["probs"][rank-1] = round(math.exp(logprob),4)
-                        logits["logprobs"][rank-1] = round(logprob,4)
+                        logits["logprobs"][rank-1] = round(logprob,4) if logprob != float("-inf") else None
                 logits_list.append(logits)
 
+        if fmconfig.log_model_io:
+            logger.info("【model_io】vLLM:"+self.model_name+".generate()")
+            logger.info("- input_text: "+input_text)
+            logger.info("- output_text: "+output_text)
         generation_output = {"output_text": output_text,
                              "input_id_list": input_id_list,
                              "input_token_list": input_token_list,
@@ -96,7 +102,6 @@ class vLLMLLM:
                              "full_text": full_text,
                              "logits": logits_list
                              }
-
         return generation_output
 
     def chat(self, 
@@ -112,7 +117,7 @@ class vLLMLLM:
             "logprobs": top_logprobs if logprobs else None,
             "stop": stop,
         }
-        outputs = self.model.chat(messages, SamplingParams(**clean_dict_null_value(sampling_kwargs)))
+        outputs = self.model.chat(messages=messages, sampling_params=SamplingParams(**clean_dict_null_value(sampling_kwargs)))
 
         openai_logprobs = None
         if logprobs:

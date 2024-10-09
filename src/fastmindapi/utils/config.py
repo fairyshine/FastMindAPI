@@ -10,6 +10,7 @@ class FMConfig(pydantic.BaseModel):
     """
     job_time: str
     type_check: bool = True
+    log_model_io: bool = True
 
 
 def get_config():

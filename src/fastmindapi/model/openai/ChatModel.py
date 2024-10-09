@@ -2,6 +2,7 @@ from typing import Optional
 
 from ...utils.transform import convert_openai_logprobs, clean_dict_null_value
 from ... import logger
+from ... import config as fmconfig
 
 class OpenAIChatModel:
     def __init__(self, 
@@ -65,6 +66,10 @@ class OpenAIChatModel:
         logits_list = None
         if return_logits:
             logits_list = convert_openai_logprobs(completion.choices[0].logprobs)
+        if fmconfig.log_model_io:
+            logger.info("【model_io】OpenAI:"+self.model_name+".generate()")
+            logger.info("- input_text: "+input_text)
+            logger.info("- output_text: "+output_text)
         generation_output = {"output_text": output_text,
                             #  "input_id_list": input_id_list,
                             #  "input_token_list": input_token_list,

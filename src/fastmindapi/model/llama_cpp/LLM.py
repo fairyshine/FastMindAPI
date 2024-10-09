@@ -2,6 +2,7 @@ from typing import Optional
 
 from ...utils.transform import convert_numpy_float32_to_float, clean_dict_null_value
 from ... import logger
+from ... import config as fmconfig
 
 class LlamacppLLM:
     def __init__(self, 
@@ -68,10 +69,14 @@ class LlamacppLLM:
                 for token in logprobs["top_logprobs"][i]:
                     logits["pred_id"].append(self.model.tokenize(token.encode('utf-8'),add_bos=False,special=True)[0])
                     logits["pred_token"].append(token)
-                    logits["logprobs"].append(round(logprobs["top_logprobs"][i][token],4))
+                    logits["logprobs"].append(round(logprobs["top_logprobs"][i][token],4) if logprobs["top_logprobs"][i][token] != float("-inf") else None)
                     logits["probs"].append(round(math.exp(logprobs["top_logprobs"][i][token]),4))
                 logits_list.append(logits)
 
+        if fmconfig.log_model_io:
+            logger.info("【model_io】Llamacpp:"+self.model_name+".generate()")
+            logger.info("- input_text: "+input_text)
+            logger.info("- output_text: "+output_text)
         generation_output = {"output_text": output_text,
                              "input_id_list": input_id_list,
                              "input_token_list": input_token_list,
@@ -80,7 +85,6 @@ class LlamacppLLM:
                              "full_token_list": full_token_list,
                              "full_text": full_text,
                              "logits": logits_list}
-
         return generation_output
 
     def chat(self, 

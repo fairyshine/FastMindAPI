@@ -12,7 +12,15 @@ def convert_numpy_float32_to_float(d):
         return d
     
 def clean_dict_null_value(d):
-    return { k:d[k] for k in d if d[k] }
+    # return { k:d[k] for k in d if d[k] }
+    new_d = {}
+    for k in d:
+        if not d[k]:
+            continue
+        if type(d[k]) == float and math.isnan(d[k]):
+            continue
+        new_d[k] = d[k]
+    return new_d
     
 def convert_openai_logprobs(logprobs):
     logprobs = logprobs.model_dump()
