@@ -8,6 +8,8 @@ from abc import ABC, abstractmethod
 # logging.basicConfig(level=logging.WARNING)
 # logger = logging.getLogger('MyLogger')
 
+# from ... import logger
+
 SCALAR=1/(2*math.sqrt(2.0))
 
 class MCTSState(ABC):
@@ -48,9 +50,9 @@ class MCTSNode:
 		self.reward=0.0	
 		self.state=state
 		self.children=[]
-		self.parent=parent	
-	def add_child(self,child_state):
-		child=MCTSNode(child_state,self)
+		self.parent=parent
+	def add_child(self, child_state):
+		child=self.__class__(child_state,self)
 		self.children.append(child)
 	def update(self,reward):
 		self.reward+=reward
@@ -66,11 +68,11 @@ class MCTSNode:
 
 class MCTS_raw:
     @classmethod
-    def UCT_search(cls, budget, root, logger=None, log_freq: int=100):
+    def UCT_search(cls, budget, root, logger=None, log_freq: int=10):
         for iter in range(int(budget)):
             if logger is not None:
                 if iter%log_freq==log_freq-1:
-                    logger.info("simulation: %d"%(iter+1))
+                    logger.info("【Iteration】: %d"%(iter+1))
                     logger.info(root)
             front=cls.tree_policy(root)
             reward=cls.default_policy(front.state)
@@ -128,11 +130,12 @@ class MCTS_raw:
 
     @staticmethod
     def default_policy(state):
-        if hasattr(state, 'simulate'):
-             state = state.simulate()
-        else:
-            while not state.terminal():
-                state=state.next_state()
+        if not state.terminal():
+            if hasattr(state, 'simulate'):
+                state = state.simulate()
+            else:
+                while not state.terminal():
+                    state=state.next_state()
         return state.reward()
 
     @staticmethod
