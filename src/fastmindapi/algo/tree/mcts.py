@@ -12,6 +12,11 @@ from abc import ABC, abstractmethod
 
 SCALAR=1/(2*math.sqrt(2.0))
 
+def calculate_score(node, scalar):
+    exploit = node.reward / node.visits
+    explore = math.sqrt(2.0 * math.log(node.visits) / float(node.visits))
+    return exploit + scalar * explore
+
 class MCTSState(ABC):
     MOVES=[]
     num_moves=len(MOVES)
@@ -77,7 +82,7 @@ class MCTS_raw:
             front=cls.tree_policy(root)
             reward=cls.default_policy(front.state)
             cls.backup(front,reward)
-        return cls.best_child(root,0)
+        return cls.best_leaf(root,SCALAR)
 
     @classmethod
     def tree_policy(cls, node):
@@ -117,16 +122,20 @@ class MCTS_raw:
     def best_child(node,scalar):
         bestscore=0.0
         bestchildren=[]
-        for c in node.children:
-            exploit=c.reward/c.visits
-            explore=math.sqrt(2.0*math.log(node.visits)/float(c.visits))	
-            score=exploit+scalar*explore
+        for c in node.children:	
+            score = calculate_score(c, scalar)
             if score==bestscore:
                 bestchildren.append(c)
             if score>bestscore:
                 bestchildren=[c]
                 bestscore=score
         return random.choice(bestchildren) if bestchildren != [] else None
+
+    @classmethod
+    def best_leaf(cls, node, scalar):
+        while node.children != []:
+            node = cls.best_child(node, scalar)
+        return node
 
     @staticmethod
     def default_policy(state):
