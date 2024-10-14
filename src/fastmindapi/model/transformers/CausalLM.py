@@ -54,8 +54,9 @@ class TransformersCausalLM:
             "max_new_tokens": max_new_tokens, 
             "stop_strings": stop_strings
         }
-        for k, v in clean_dict_null_value(config).items():
-            generate_kwargs[k] = v
+        if config:
+            for k, v in clean_dict_null_value(config).items():
+                generate_kwargs[k] = v
 
         with torch.no_grad():
             outputs = self.model.generate(inputs.input_ids, **clean_dict_null_value(generate_kwargs), tokenizer=self.tokenizer)
