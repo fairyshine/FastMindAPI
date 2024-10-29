@@ -14,7 +14,7 @@ SCALAR=1/(2*math.sqrt(2.0))
 
 def calculate_score(node, scalar):
     exploit = node.reward / node.visits
-    explore = math.sqrt(2.0 * math.log(node.visits) / float(node.visits))
+    explore = math.sqrt(2.0 * math.log(node.parent.visits) / float(node.visits))
     return exploit + scalar * explore
 
 class MCTSState(ABC):
