@@ -64,7 +64,7 @@ pip install fastmindapi
 ##### in Terminal
 
 ```shell
-fastmindapi-server --port 8000 --apikey sk-19992001
+fastmindapi-server --port 8000 --apikey sk-1999XXYY
 ```
 
 ##### in Python
@@ -72,7 +72,7 @@ fastmindapi-server --port 8000 --apikey sk-19992001
 import fastmindapi as FM
 
 # Run the server with authentication key, port 8000 for default
-server = FM.Server(API_KEY="sk-19992001")
+server = FM.Server(API_KEY="sk-1999XXYY")
 server.run()
 ```
 
@@ -88,7 +88,7 @@ curl http://IP:PORT/docs#/
 # 1. add model info
 curl http://127.0.0.1:8000/model/add_info \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer sk-19992001" \
+  -H "Authorization: Bearer sk-1999XXYY" \
   -d '{
   "model_name": "gemma2",
   "model_type": "Transformers_CausalLM",
@@ -96,13 +96,13 @@ curl http://127.0.0.1:8000/model/add_info \
 }'
 
 # 2. load model
-curl http://127.0.0.1:8000/model/load/gemma2 -H "Authorization: Bearer sk-19992001"
+curl http://127.0.0.1:8000/model/load/gemma2 -H "Authorization: Bearer sk-1999XXYY"
 
 # 3. run model inference
 # 3.1 Generation API
 curl http://127.0.0.1:8000/model/generate/gemma2 \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer sk-19992001" \
+  -H "Authorization: Bearer sk-1999XXYY" \
   -d '{
   "input_text": "Do you know something about Dota2?",
   "max_new_tokens": 100,
@@ -114,7 +114,7 @@ curl http://127.0.0.1:8000/model/generate/gemma2 \
 # 3.2 OpenAI like API
 curl http://127.0.0.1:8000/openai/chat/completions 
 	-H "Content-Type: application/json" \
-	-H "Authorization: Bearer sk-19992001" \
+	-H "Authorization: Bearer sk-1999XXYY" \
 	-d '{
   "model": "gemma2",
   "messages": [
@@ -139,7 +139,7 @@ curl http://127.0.0.1:8000/openai/chat/completions
 import fastmindapi as FM
 
 # 127.0.0.1:8000 for default address
-client = FM.Client(IP="x.x.x.x", PORT=xxx, API_KEY="sk-19992001") 
+client = FM.Client(IP="x.x.x.x", PORT=xxx, API_KEY="sk-1999XXYY") 
 
 # 1. add model info
 model_info_list = [
